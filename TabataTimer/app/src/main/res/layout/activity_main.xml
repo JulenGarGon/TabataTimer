@@ -1,7 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/blanco"
+    >
+
+    <include
+        android:id="@+id/xml_toolbar"
+        layout="@layout/toolbar"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/xml_toolbar"
+        >
+        
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/inicio_sesion"
+            app:layout_constraintStart_toEndOf="@id/left_guideline"
+            app:layout_constraintTop_toBottomOf="@id/top_guideline"
+            app:layout_constraintEnd_toStartOf="@id/right_guideline"
+            app:layout_constraintBottom_toTopOf="@id/bottom_guideline"
+            >
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Guías de contenido -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/top_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.20"
+            />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/left_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.20"
+            />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/right_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.80"
+            />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/bottom_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.80"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
