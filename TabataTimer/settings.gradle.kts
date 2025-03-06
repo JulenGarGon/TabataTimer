@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TabataTimer"
+rootProject.name = "Tabata Timer"
 include(":app")
  
