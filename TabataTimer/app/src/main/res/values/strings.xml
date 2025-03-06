@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">Tabata Timer</string>
-    <string name="login">Registro</string>
-    <string name="user_name">Nombre de usuario</string>
-    <string name="password">Contraseña</string>
-    <string name="login_now">Registrarse</string>
-    <string name="sin_cuenta">¿No tiene una cuenta? Registrese</string>
-</resources>
