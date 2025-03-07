@@ -17,7 +17,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 class MainActivity : ComponentActivity() {
@@ -29,6 +35,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen() {
     var email by remember { mutableStateOf("") }
@@ -41,83 +48,136 @@ fun LoginScreen() {
     }
 
     val context = LocalContext.current
+    val customFontFamily = FontFamily(
+        Font(R.font.groteskmedium)
+    )
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text="") },
+                navigationIcon = {
+                    Text(
+                        text = stringResource(R.string.mas_orange),
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                },
+                actions = {
+                    IconButton(
+                        onClick = {} ,
+                        modifier = Modifier.padding(end = 16.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.logo_masorange),
+                            contentDescription = "Logo",
+                            modifier = Modifier
+                                .size(240.dp)
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = colorResource(R.color.naranja)
+                )
+            )
+        }
+    ){ innerPadding ->
+        Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(innerPadding),
+            color = MaterialTheme.colorScheme.background
         ) {
-
-            Text(text = stringResource(R.string.login), fontSize = 30.sp, modifier = Modifier.padding(bottom = 20.dp))
-
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text(stringResource(R.string.user_name)) },
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        // Acción para mover al siguiente campo (contraseña)
-                    }
-                )
-            )
-
-            // Campo de contraseña
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text(stringResource(R.string.password)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        // Acción para cerrar el teclado cuando se presiona "Done"
-                    }
-                )
-            )
-
-            // Botón de inicio de sesión
-            Button(
-                onClick = {
-                    Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                enabled = isButtonEnabled // Habilitar solo si ambos campos están completos
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center // Esto centra el contenido verticalmente
             ) {
-                Text(text = stringResource(R.string.login_now))
-            }
+                // Nombre de la app encima del registro
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = TextStyle(
+                        fontFamily = customFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 50.sp
+                    ),
+                    modifier = Modifier.padding(bottom = 20.dp) // Separación entre el texto y los demás elementos
+                )
 
-            // Botón de registro (opcional)
-            TextButton(
-                onClick = {
-                    // Acción para ir a la pantalla de registro
-                    Toast.makeText(context, "Navigate to Register Screen", Toast.LENGTH_SHORT).show()
-                },
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                Text(text = stringResource(R.string.sin_cuenta), color = MaterialTheme.colorScheme.primary)
+                // Título
+                Text(
+                    text = stringResource(R.string.login),
+                    fontSize = 30.sp,
+                    modifier = Modifier.padding(bottom = 20.dp)
+                )
+
+                // Campo de correo electrónico
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text(stringResource(R.string.user_name)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            // Acción para mover al siguiente campo (contraseña)
+                        }
+                    )
+                )
+
+                // Campo de contraseña
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text(stringResource(R.string.password)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            // Acción para cerrar el teclado cuando se presiona "Done"
+                        }
+                    )
+                )
+
+                // Botón de inicio de sesión
+                Button(
+                    onClick = {
+                        Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    enabled = isButtonEnabled // Habilitar solo si ambos campos están completos
+                ) {
+                    Text(text = stringResource(R.string.login_now))
+                }
+
+                TextButton(
+                    onClick = {
+                        //Ir al crear cuenta
+                    },
+                    modifier = Modifier.padding(top = 16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.sin_cuenta),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
     }

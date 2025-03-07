@@ -5,4 +5,5 @@
     <string name="password">Contraseña</string>
     <string name="login_now">Registrarse</string>
     <string name="sin_cuenta">¿No tienes cuenta? Create una</string>
+    <string name="mas_orange">masOrange</string>
 </resources>
