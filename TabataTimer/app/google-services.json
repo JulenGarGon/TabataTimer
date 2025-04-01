@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "488907016244",
+    "project_id": "tabata-timer-b9839",
+    "storage_bucket": "tabata-timer-b9839.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:488907016244:android:2f0b770427a07a3c292261",
+        "android_client_info": {
+          "package_name": "com.example.tabatatimer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1eJ9LUZ2afzh5SqLWcR6A-U2aLkgDSHM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
