@@ -4,6 +4,7 @@
     <string name="user_name">Usuario</string>
     <string name="password">Contraseña</string>
     <string name="login_now">Registrarse</string>
-    <string name="sin_cuenta">¿No tienes cuenta? Create una</string>
+    <string name="sin_cuenta">¿No tienes cuenta? Registrate</string>
     <string name="mas_orange">masOrange</string>
+    <string name="bienvenido">BIENVENIDO</string>
 </resources>
