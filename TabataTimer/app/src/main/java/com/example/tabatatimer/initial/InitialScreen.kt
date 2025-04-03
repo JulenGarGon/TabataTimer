@@ -224,9 +224,3 @@ fun InitialScreen( auth: FirebaseAuth, navigateToApp: () -> Unit = {}, navigateT
         }
     }
 }
-
-@Preview
-@Composable
-fun visualizacion(){
-
-}

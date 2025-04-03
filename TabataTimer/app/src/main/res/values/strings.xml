@@ -3,6 +3,7 @@
     <string name="login">Registro</string>
     <string name="user_name">Usuario</string>
     <string name="password">Contraseña</string>
+    <string name="password_confirm">Confirmar contraseña</string>
     <string name="login_now">Registrarse</string>
     <string name="sin_cuenta">¿No tienes cuenta? Registrate</string>
     <string name="mas_orange">masOrange</string>
