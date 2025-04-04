@@ -4,8 +4,16 @@
     <string name="user_name">Usuario</string>
     <string name="password">Contraseña</string>
     <string name="password_confirm">Confirmar contraseña</string>
+    <string name="email">Correo electrónico</string>
+    <string name="email_confirm">Confirmar correo electrónico</string>
     <string name="login_now">Registrarse</string>
     <string name="sin_cuenta">¿No tienes cuenta? Registrate</string>
     <string name="mas_orange">masOrange</string>
     <string name="bienvenido">BIENVENIDO</string>
+
+    <!-- NOMBRES DE ICONOS -->
+    <string name="home">Inicio</string>
+    <string name="resumen">Resumen</string>
+    <string name="calendario">Calendario</string>
+    <string name="musculos">Musculos</string>
 </resources>

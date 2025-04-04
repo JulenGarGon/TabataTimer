@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.tabatatimer.home.HomeScreen
 import com.example.tabatatimer.ui.theme.TabataTimerTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -60,8 +61,6 @@ class MainActivity : ComponentActivity() {
         super.onStart()
         val currentUser = auth.currentUser
         if (currentUser != null){
-            //Desde aquí hacer el acceso a la app si ya se ha registrado
         }
     }
-
 }

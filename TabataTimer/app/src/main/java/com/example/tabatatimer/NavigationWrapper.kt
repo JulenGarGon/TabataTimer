@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.tabatatimer.home.HomeScreen
 import com.example.tabatatimer.initial.InitialScreen
 import com.example.tabatatimer.signup.SignUpScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -26,6 +27,9 @@ fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth){
                 auth,
                 onBackPressed = { navHostController.navigate("initial")}
             )
+        }
+        composable("app"){
+            HomeScreen()
         }
     }
 }
