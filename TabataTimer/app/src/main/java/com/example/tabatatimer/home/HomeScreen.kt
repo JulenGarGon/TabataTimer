@@ -1,11 +1,6 @@
 package com.example.tabatatimer.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -13,7 +8,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,8 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tabatatimer.R
-import com.example.tabatatimer.ui.theme.Gris_Claro
-import com.example.tabatatimer.ui.theme.Negro
 
 @Preview
 @Composable
@@ -38,10 +30,10 @@ fun HomeScreen(){
         TabItem(R.string.musculos, R.drawable.ic_fitness, R.drawable.ic_fitness_filled)
     )
 
-    val homeState = remember { mutableStateOf("Estado inicial de inicio") }
-    val summaryState = remember { mutableStateOf("Estado inicial de resumen") }
-    val calendarState = remember { mutableStateOf("Estado inicial de calendario") }
-    val musclesState = remember { mutableStateOf("Estado inicial de musculos") }
+    val homeState by remember { mutableStateOf("Estado inicial de inicio") }
+    val summaryState by remember { mutableStateOf("Estado inicial de resumen") }
+    val calendarState by remember { mutableStateOf("Estado inicial de calendario") }
+    val musclesState by remember { mutableStateOf("Estado inicial de musculos") }
 
     Scaffold (
         bottomBar = {
@@ -69,10 +61,7 @@ fun HomeScreen(){
     ){ innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)){
             when (selectedTab) {
-                0 -> HomeContent(homeState)
-                1 -> SummaryContent(summaryState)
-                2 -> CalendarContent(calendarState)
-                3 -> MusclesContent(musclesState)
+
             }
         }
     }
@@ -80,36 +69,3 @@ fun HomeScreen(){
 }
 
 data class TabItem(val titleRes: Int, val iconRes: Int, val selectedIconRes: Int)
-
-@Composable
-fun HomeContent(state: MutableState<String>){
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Negro)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.3f)
-                .background(Gris_Claro)
-        ){}
-        Box(){}
-        Box(){}
-    }
-}
-
-@Composable
-fun SummaryContent(state: MutableState<String>){
-    Text(text = "Resumen")
-}
-
-@Composable
-fun CalendarContent(state: MutableState<String>){
-    Text(text = "Calendario")
-}
-
-@Composable
-fun MusclesContent(state: MutableState<String>){
-    Text(text = "Musculos")
-}
