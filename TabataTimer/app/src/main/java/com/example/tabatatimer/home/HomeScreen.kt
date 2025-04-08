@@ -30,7 +30,7 @@ import com.example.tabatatimer.ui.theme.Negro
 @Preview
 @Composable
 fun HomeScreen(){
-    var selectedTab by remember { mutableStateOf(1) }
+    var selectedTab by remember { mutableStateOf(0) }
 
     val tabs = listOf(
         TabItem(R.string.home, R.drawable.ic_home, R.drawable.ic_home_filled),
@@ -84,8 +84,7 @@ data class TabItem(val titleRes: Int, val iconRes: Int, val selectedIconRes: Int
 
 @Composable
 fun HomeContent(state: MutableState<String>){
-    //Inicio()
-    Text(text = "Inicio")
+    Inicio()
 }
 
 @Composable

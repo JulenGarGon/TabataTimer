@@ -1,6 +1,6 @@
 package com.example.tabatatimer.model
 
-data class Sets(
+data class Musculo(
     val id: Int? = null,
     val nombre: String? = null,
     val imagen: String? = null
