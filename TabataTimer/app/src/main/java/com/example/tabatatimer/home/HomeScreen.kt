@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tabatatimer.R
+import com.example.tabatatimer.calendario.Calendario
 import com.example.tabatatimer.inicio.Inicio
 import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Negro
@@ -94,7 +95,7 @@ fun SummaryContent(state: MutableState<String>){
 
 @Composable
 fun CalendarContent(state: MutableState<String>){
-    Text(text = "Calendario")
+    Calendario()
 }
 
 @Composable
