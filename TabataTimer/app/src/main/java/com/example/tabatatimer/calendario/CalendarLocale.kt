@@ -1,7 +1,7 @@
 package com.example.tabatatimer.calendario
 
 import android.os.Build
-import android.widget.CalendarView
+import com.example.tabatatimer.R
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
@@ -128,11 +129,11 @@ class CalendarLocale {
             verticalAlignment = Alignment.CenterVertically
         ){
             IconButton(onClick = onPrevious) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Mes anterior")
+                Icon(painter = painterResource(R.drawable.ic_arrow_back), contentDescription = "Mes anterior")
             }
             Text(text = monthYear)
             IconButton(onClick = onNext) {
-                Icon(Icons.Default.ArrowForward, contentDescription = "Mes siguiente")
+                Icon(painter = painterResource(R.drawable.ic_arrow_forward), contentDescription = "Mes siguiente")
             }
         }
     }

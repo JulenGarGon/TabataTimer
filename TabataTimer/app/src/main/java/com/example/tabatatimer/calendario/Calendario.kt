@@ -25,56 +25,60 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import com.example.tabatatimer.ui.theme.Blanco
+import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Gris_Oscuro
+import com.example.tabatatimer.ui.theme.Negro
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun Calendario(){
+fun Calendario() {
     val calendar = CalendarLocale()
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ){
-        Scaffold { innerPadding ->
-            Column(
+
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                //.padding(innerPadding)
+        ) {
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                ) {
-                Box(
-                    modifier = Modifier
-                        .weight(0.4f)
-                        .fillMaxWidth()
-                        .background(Blanco)
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                ) {
-                    calendar.CalendarView(
-                        selectedDate = selectedDate,
-                        onDateSelected = { date ->
-                            selectedDate = date
-                        }
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .weight(0.6f)
-                        .fillMaxWidth()
-                        .background(Gris_Oscuro)
-                ) {
-                    Column (
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
-                    ){
-                        LazyColumn {  }
+                    .weight(0.4f)
+                    .fillMaxWidth()
+                    .background(Blanco)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .padding(top = innerPadding.calculateTopPadding())
+            ) {
+                calendar.CalendarView(
+                    selectedDate = selectedDate,
+                    onDateSelected = { date ->
+                        selectedDate = date
                     }
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .weight(0.6f)
+                    .fillMaxWidth()
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(Negro, Gris_Oscuro, Gris_Claro)
+                        )
+                    )
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    LazyColumn { }
                 }
             }
         }
-
     }
+
 }

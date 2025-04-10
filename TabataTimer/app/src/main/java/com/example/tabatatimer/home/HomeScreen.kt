@@ -1,5 +1,7 @@
 package com.example.tabatatimer.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +30,7 @@ import com.example.tabatatimer.inicio.Inicio
 import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Negro
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun HomeScreen(){
@@ -69,7 +72,7 @@ fun HomeScreen(){
             }
         }
     ){ innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)){
+        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()){
             when (selectedTab) {
                 0 -> HomeContent(homeState)
                 1 -> SummaryContent(summaryState)
@@ -93,6 +96,7 @@ fun SummaryContent(state: MutableState<String>){
     Text(text = "Resumen")
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarContent(state: MutableState<String>){
     Calendario()
