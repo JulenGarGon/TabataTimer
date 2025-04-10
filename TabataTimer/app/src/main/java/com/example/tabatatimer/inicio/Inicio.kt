@@ -48,11 +48,6 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
 
     val context = LocalContext.current
 
-    val boxModifier = Modifier
-        .fillMaxWidth()
-        .height(150.dp)
-        .padding(horizontal = 8.dp)
-
     Column(
         modifier = Modifier
             .fillMaxSize()
