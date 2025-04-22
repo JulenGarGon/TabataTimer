@@ -1,10 +1,12 @@
 package com.example.tabatatimer
 
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -38,7 +40,9 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var navHostController: NavHostController
     private lateinit var auth: FirebaseAuth
+    private var destination: String = "initial"
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
@@ -51,16 +55,19 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavigationWrapper(navHostController, auth)
+                    NavigationWrapper(navHostController, auth, destination)
                 }
             }
         }
     }
 
+
     override fun onStart() {
         super.onStart()
         val currentUser = auth.currentUser
         if (currentUser != null){
+            //NavigationWrapper(navHostController, auth, "home")
+            destination = "app"
         }
     }
 }

@@ -48,6 +48,7 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
 
     val context = LocalContext.current
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,11 +62,11 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
                 .weight(0.3f)
                 .background(Brush.horizontalGradient(listOf(Gris_Oscuro, Blanco, Gris_Claro))),
             contentAlignment = Alignment.Center
-        ){
-            Column (
+        ) {
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
                 Text(
                     text = "EJERCICIOS",
                     color = Negro
@@ -73,8 +74,12 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
                 Spacer(modifier = Modifier.width(10.dp))
                 LazyRow {
                     items(ejercicios.value) {
-                        EjercicioItem(ejercicio = it, onItemSelected = {
-                            selectedEjercicio -> Toast.makeText(context, "Ejercicio seleccionado: ${selectedEjercicio.nombre.orEmpty()}", Toast.LENGTH_SHORT).show()
+                        EjercicioItem(ejercicio = it, onItemSelected = { selectedEjercicio ->
+                            Toast.makeText(
+                                context,
+                                "Ejercicio seleccionado: ${selectedEjercicio.nombre.orEmpty()}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         })
                         Spacer(modifier = Modifier.width(2.dp))
                     }
@@ -89,11 +94,11 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
                 .weight(0.3f)
                 .background(Brush.horizontalGradient(listOf(Gris_Claro, Blanco, Gris_Oscuro))),
             contentAlignment = Alignment.Center
-        ){
-            Column (
+        ) {
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
                 Text(
                     text = "SETS",
                     color = Negro
@@ -101,8 +106,12 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
                 Spacer(modifier = Modifier.width(10.dp))
                 LazyRow {
                     items(sets.value) {
-                        SetItem(set = it, onItemSelected = {
-                            selectedSet -> Toast.makeText(context, "Set seleccionado ${selectedSet.nombre.orEmpty()}", Toast.LENGTH_SHORT).show()
+                        SetItem(set = it, onItemSelected = { selectedSet ->
+                            Toast.makeText(
+                                context,
+                                "Set seleccionado ${selectedSet.nombre.orEmpty()}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         })
                         Spacer(modifier = Modifier.width(2.dp))
                     }
@@ -117,20 +126,24 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
                 .weight(0.3f)
                 .background(Brush.horizontalGradient(listOf(Gris_Oscuro, Blanco, Gris_Claro))),
             contentAlignment = Alignment.Center
-        ){
-            Column (
+        ) {
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
                 Text(
                     text = "MÚSCULOS",
                     color = Negro
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 LazyRow {
-                    items(musculos.value){
-                        SetMusculo(musculo = it, onItemSelected = {
-                            selectedMusculo -> Toast.makeText(context, "Músculo seleccionado ${selectedMusculo.nombre.orEmpty()}", Toast.LENGTH_SHORT).show()
+                    items(musculos.value) {
+                        SetMusculo(musculo = it, onItemSelected = { selectedMusculo ->
+                            Toast.makeText(
+                                context,
+                                "Músculo seleccionado ${selectedMusculo.nombre.orEmpty()}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         })
                         Spacer(modifier = Modifier.width(2.dp))
                     }

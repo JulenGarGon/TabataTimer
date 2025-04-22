@@ -1,6 +1,7 @@
 package com.example.tabatatimer.home
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,7 +10,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -33,7 +37,7 @@ import com.example.tabatatimer.ui.theme.Negro
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
-fun HomeScreen(){
+fun HomeScreen() {
     var selectedTab by remember { mutableStateOf(0) }
 
     val tabs = listOf(
@@ -48,10 +52,10 @@ fun HomeScreen(){
     val calendarState = remember { mutableStateOf("Estado inicial de calendario") }
     val musclesState = remember { mutableStateOf("Estado inicial de musculos") }
 
-    Scaffold (
+    Scaffold(
         bottomBar = {
             NavigationBar {
-                tabs.forEachIndexed{index, tab ->
+                tabs.forEachIndexed { index, tab ->
                     NavigationBarItem(
                         icon = {
                             val iconRes = if (selectedTab == index) {
@@ -66,13 +70,26 @@ fun HomeScreen(){
                         },
                         label = { Text(text = stringResource(id = tab.titleRes)) },
                         selected = selectedTab == index,
-                        onClick = {selectedTab = index}
+                        onClick = { selectedTab = index }
                     )
                 }
             }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    //TODO
+                },
+                containerColor = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            ) {
+                Text(text = "+")
+            }
         }
-    ){ innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding).fillMaxSize()){
+    ) { innerPadding ->
+        Box(modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize()) {
             when (selectedTab) {
                 0 -> HomeContent(homeState)
                 1 -> SummaryContent(summaryState)
@@ -87,22 +104,22 @@ fun HomeScreen(){
 data class TabItem(val titleRes: Int, val iconRes: Int, val selectedIconRes: Int)
 
 @Composable
-fun HomeContent(state: MutableState<String>){
+fun HomeContent(state: MutableState<String>) {
     Inicio()
 }
 
 @Composable
-fun SummaryContent(state: MutableState<String>){
+fun SummaryContent(state: MutableState<String>) {
     Text(text = "Resumen")
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CalendarContent(state: MutableState<String>){
+fun CalendarContent(state: MutableState<String>) {
     Calendario()
 }
 
 @Composable
-fun MusclesContent(state: MutableState<String>){
+fun MusclesContent(state: MutableState<String>) {
     Text(text = "Musculos")
 }

@@ -1,6 +1,9 @@
 package com.example.tabatatimer
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,11 +13,12 @@ import com.example.tabatatimer.initial.InitialScreen
 import com.example.tabatatimer.signup.SignUpScreen
 import com.google.firebase.auth.FirebaseAuth
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth){
+fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, destination: String){
     val navController = rememberNavController()
 
-    NavHost(navController = navHostController, startDestination = "initial"){
+    NavHost(navController = navHostController, startDestination = destination){
         composable("initial"){
             InitialScreen(
                 auth,
