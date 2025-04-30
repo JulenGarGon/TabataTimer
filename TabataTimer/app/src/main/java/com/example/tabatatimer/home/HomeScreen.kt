@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.tabatatimer.R
 import com.example.tabatatimer.calendario.Calendario
 import com.example.tabatatimer.inicio.Inicio
+import com.example.tabatatimer.resumen.Resumen
 import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Negro
 
@@ -110,7 +111,7 @@ fun HomeContent(state: MutableState<String>) {
 
 @Composable
 fun SummaryContent(state: MutableState<String>) {
-    Text(text = "Resumen")
+    Resumen()
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
