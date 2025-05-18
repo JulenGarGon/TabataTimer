@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,20 +45,27 @@ import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun Calendario(viewModel: CalendarioViewModel = CalendarioViewModel()) {
     val calendar = CalendarLocale()
+    //var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
 
-   val ejerciciosRealizados: State<List<EjercicioRealizado>> = viewModel.ejercicioDia.collectAsState()
+    val ejerciciosRealizados by viewModel.ejercicioDia.collectAsState()
+
+    val fechaInicial = remember(selectedDate) {
+        "${selectedDate.dayOfMonth}-${selectedDate.monthValue}-${selectedDate.year}"
+    }
+
+    //val ejerciciosRealizados by viewModel.ejercicioDia.collectAsState()
+
+    LaunchedEffect(selectedDate) {
+        viewModel.setFechaSeleccionada(selectedDate)
+    }
+
 
     Scaffold { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                //.padding(innerPadding)
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
                     .weight(0.4f)
@@ -70,15 +78,19 @@ fun Calendario(viewModel: CalendarioViewModel = CalendarioViewModel()) {
                     selectedDate = selectedDate,
                     onDateSelected = { date ->
                         selectedDate = date
-                        val fecha = ""
-                        viewModel.setFechaSeleccionada("${selectedDate.dayOfMonth}-${selectedDate.monthValue}-${selectedDate.year}")
                     }
                 )
-                Text(
-                    text = "Fecha seleccionada: ${selectedDate.dayOfMonth}/${selectedDate.monthValue}/${selectedDate.year}",
-                    style = MaterialTheme.typography.bodyLarge
-                )
+
             }
+
+            Text(
+                text = "Fecha seleccionada: ${selectedDate.dayOfMonth}/${selectedDate.monthValue}/${selectedDate.year}",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 4.dp)
+            )
+
             Box(
                 modifier = Modifier
                     .weight(0.6f)
@@ -94,15 +106,18 @@ fun Calendario(viewModel: CalendarioViewModel = CalendarioViewModel()) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     LazyColumn {
-                        if (ejerciciosRealizados.value.isEmpty()) {
-                            item{ Text(text = "Este día no entrenaste",
-                                        color = Blanco,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.padding(8.dp),
-                                        style = MaterialTheme.typography.bodyMedium)
+                        if (ejerciciosRealizados.isEmpty()) {
+                            item {
+                                Text(
+                                    text = "Este día no entrenaste",
+                                    color = Blanco,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.padding(8.dp),
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
                             }
                         } else {
-                            items(ejerciciosRealizados.value) {
+                            items(ejerciciosRealizados) {
                                 EjerciciosRealizados(it)
                             }
                         }
@@ -111,8 +126,8 @@ fun Calendario(viewModel: CalendarioViewModel = CalendarioViewModel()) {
             }
         }
     }
-
 }
+
 
 @Composable
 fun EjerciciosRealizados(ejercicioRealizado: EjercicioRealizado) {

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -48,14 +50,16 @@ class CalendarLocale {
     fun CalendarView(
         selectedDate: LocalDate = LocalDate.now(),
         onDateSelected: (LocalDate) -> Unit = {}
-    ){
+    ) {
         var currentMonth by remember { mutableStateOf(YearMonth.now()) }
 
-        val daysInMonth = currentMonth.lengthOfMonth()
-        val firstDayOfWeek = currentMonth.atDay(1).dayOfWeek.value % 7
-        val days = List(firstDayOfWeek) { null } + (1..daysInMonth).map { it }
+        val days = remember(currentMonth) {
+            val firstDayOfWeek = currentMonth.atDay(1).dayOfWeek.value % 7
+            val daysInMonth = currentMonth.lengthOfMonth()
+            List(firstDayOfWeek) { null } + (1..daysInMonth).toList()
+        }
 
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxHeight()) {
             CalendarHeader(
                 currentMonth = currentMonth,
                 onPrevious = { currentMonth = currentMonth.minusMonths(1) },
@@ -70,46 +74,58 @@ class CalendarLocale {
                 columns = GridCells.Fixed(7),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.height(300.dp)
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
             ) {
                 items(days.size) { index ->
                     val day = days[index]
                     val date = day?.let { currentMonth.atDay(it) }
                     val isSelected = date == selectedDate
 
+                    CalendarDayCell(
+                        day = day,
+                        isSelected = isSelected,
+                        onClick = {
+                            day?.let { onDateSelected(currentMonth.atDay(it)) }
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun CalendarDayCell(
+        day: Int?,
+        isSelected: Boolean,
+        onClick: () -> Unit
+    ) {
+        Box(
+            modifier = Modifier
+                .aspectRatio(1f)
+                .clickable(enabled = day != null, onClick = onClick)
+                .padding(4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            if (day != null) {
+                Surface(
+                    shape = MaterialTheme.shapes.small,
+                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                    tonalElevation = if (isSelected) 4.dp else 0.dp,
+                ) {
                     Box(
                         modifier = Modifier
-                            .aspectRatio(1f)
-                            .clickable(enabled = day != null) {
-                                day?.let {
-                                    onDateSelected(currentMonth.atDay(it))
-                                }
-                            }
+                            .fillMaxSize()
                             .padding(4.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (day != null) {
-                            Surface(
-                                shape = MaterialTheme.shapes.small,
-                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
-                                tonalElevation = if (isSelected) 4.dp else 0.dp,
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(4.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = day.toString(),
-                                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-                                    )
-                                }
-                            }
-                        }
+                        Text(
+                            text = day.toString(),
+                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
-
             }
         }
     }
@@ -121,17 +137,21 @@ class CalendarLocale {
         onPrevious: () -> Unit,
         onNext: () -> Unit
     ) {
-        val monthYear = currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault()).replaceFirstChar{ if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } + "${currentMonth.year}"
+        val formatter = remember {
+            DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())
+        }
+        val monthText = currentMonth.atDay(1).format(formatter)
+            .replaceFirstChar { it.uppercaseChar() }
 
-        Row (
+        Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             IconButton(onClick = onPrevious) {
                 Icon(painter = painterResource(R.drawable.ic_arrow_back), contentDescription = "Mes anterior")
             }
-            Text(text = monthYear)
+            Text(text = monthText)
             IconButton(onClick = onNext) {
                 Icon(painter = painterResource(R.drawable.ic_arrow_forward), contentDescription = "Mes siguiente")
             }
@@ -141,11 +161,11 @@ class CalendarLocale {
     @Composable
     private fun DaysOfWeekLabels() {
         val daysOfWeek = listOf("L", "M", "X", "J", "V", "S", "D")
-        Row (
+        Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
-        ){
-            daysOfWeek.forEach{
+        ) {
+            daysOfWeek.forEach {
                 Text(
                     text = it,
                     modifier = Modifier.weight(1f),

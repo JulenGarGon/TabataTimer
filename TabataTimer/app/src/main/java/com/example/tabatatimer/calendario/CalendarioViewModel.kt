@@ -16,30 +16,29 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 
-class CalendarioViewModel : ViewModel(){
+class CalendarioViewModel : ViewModel() {
     private val usuario = FirebaseAuth.getInstance().currentUser?.email
-    private var db: FirebaseFirestore = Firebase.firestore
+    private val db: FirebaseFirestore = Firebase.firestore
 
     private val _ejerciciosDia = MutableStateFlow<List<EjercicioRealizado>>(emptyList())
     val ejercicioDia: StateFlow<List<EjercicioRealizado>> = _ejerciciosDia.asStateFlow()
 
-    private val _fechaSeleccionada = MutableStateFlow<String?>(null)
-    val fechaSeleccionada: StateFlow<String?> = _fechaSeleccionada
+    private val _fechaSeleccionada = MutableStateFlow<LocalDate?>(null)
+    val fechaSeleccionada: MutableStateFlow<LocalDate?> = _fechaSeleccionada
 
-//    init {
-//        getEjerciciosRealizados(_fechaSeleccionada.value)
-//    }
-
-    fun setFechaSeleccionada(fecha: String){
+    fun setFechaSeleccionada(fecha: LocalDate) {
+        if (_fechaSeleccionada.value == fecha) return
         _fechaSeleccionada.value = fecha
-        //Log.i("FECHA FORMATEADA DEL CALENDARIO", fecha)
-        getEjerciciosRealizados(fecha)
-        mostrarDatos(fecha)
+        val formatoFirebase = "${fecha.dayOfMonth}-${fecha.monthValue}-${fecha.year}"
+
+        getEjerciciosRealizados(formatoFirebase)
+        //mostrarDatos(fecha)
     }
 
-    fun mostrarDatos(fecha: String){
-        val objeto = db.collection("ej_realizado")
+    private fun mostrarDatos(fecha: String) {
+        db.collection("ej_realizado")
             .document(usuario.toString())
             .collection(fecha)
             .get()
@@ -47,15 +46,12 @@ class CalendarioViewModel : ViewModel(){
                 val ejercicios = result.map { it.toObject(EjercicioRealizado::class.java) }
                 Log.i("DATOS OBTENIDOS", ejercicios.toString())
             }
-            .addOnFailureListener{ exception ->
+            .addOnFailureListener { exception ->
                 Log.e("DATOS OBTENIDOS", "Error al obtener datos", exception)
             }
-        Log.i("DATOS OBTENIDOS", objeto.toString())
-        Log.i("DATOS OBTENIDOS", usuario.toString())
-        Log.i("DATOS OBTENIDOS", fechaSeleccionada.toString())
     }
 
-    private fun getEjerciciosRealizados(fecha: String){
+    private fun getEjerciciosRealizados(fecha: String) {
         viewModelScope.launch {
             val result: List<EjercicioRealizado> = withContext(Dispatchers.IO) {
                 getAllEjerciciosDia(fecha)
@@ -64,7 +60,7 @@ class CalendarioViewModel : ViewModel(){
         }
     }
 
-    suspend fun getAllEjerciciosDia(fecha:String): List<EjercicioRealizado>{
+    private suspend fun getAllEjerciciosDia(fecha: String): List<EjercicioRealizado> {
         return try {
             db.collection("ej_realizado")
                 .document(usuario.toString())
@@ -72,13 +68,10 @@ class CalendarioViewModel : ViewModel(){
                 .get()
                 .await()
                 .documents
-                .mapNotNull {it ->
-                    it.toObject(EjercicioRealizado::class.java)
-                }
-        } catch (e: Exception){
+                .mapNotNull { it.toObject(EjercicioRealizado::class.java) }
+        } catch (e: Exception) {
             Log.i("FIRESTORE", e.toString())
             emptyList()
         }
     }
-
 }
