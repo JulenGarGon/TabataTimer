@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.tabatatimer.R
 import com.example.tabatatimer.calendario.Calendario
 import com.example.tabatatimer.inicio.Inicio
+import com.example.tabatatimer.musculos.Musculos
 import com.example.tabatatimer.resumen.Resumen
 import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Negro
@@ -122,5 +123,5 @@ fun CalendarContent(state: MutableState<String>) {
 
 @Composable
 fun MusclesContent(state: MutableState<String>) {
-    Text(text = "Musculos")
+    Musculos()
 }
