@@ -61,7 +61,7 @@ fun Musculos(viewModel: MusculosViewModel = viewModel()) {
         OverlayImage(R.drawable.espalda, Offset(63.5f, -54.5f), "espalda"),
         OverlayImage(R.drawable.gluteos, Offset(64f, -0.5f), "gluteos"),
         OverlayImage(R.drawable.hombrosfrontal, Offset(-67f, 12.5f), "hombro"),
-        OverlayImage(R.drawable.hombrostrasera, Offset(52f, -0.5f), "hombrotrasero"),
+        OverlayImage(R.drawable.hombrostrasera, Offset(52f, -0.5f), "hombro"),
         OverlayImage(R.drawable.muslofrontal, Offset(-80f, 32.6f), "muslo"),
         OverlayImage(R.drawable.muslotrasero, Offset(58f, -45f), "muslotrasero"),
         OverlayImage(R.drawable.oblicuo, Offset(-68f, -22f), "oblicuo"),

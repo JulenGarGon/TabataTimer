@@ -23,6 +23,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.tabatatimer.ejercicio.Ejercicio
 import com.example.tabatatimer.model.Ejercicio
 import com.example.tabatatimer.model.Musculo
 import com.example.tabatatimer.model.Sets
@@ -48,6 +53,7 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
 
     val context = LocalContext.current
 
+    var ejercicioSeleccionado by remember { mutableStateOf<Ejercicio?>(null) }
 
     Column(
         modifier = Modifier
@@ -75,11 +81,12 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
                 LazyRow {
                     items(ejercicios.value) {
                         EjercicioItem(ejercicio = it, onItemSelected = { selectedEjercicio ->
-                            Toast.makeText(
-                                context,
-                                "Ejercicio seleccionado: ${selectedEjercicio.nombre.orEmpty()}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            ejercicioSeleccionado = selectedEjercicio
+//                            Toast.makeText(
+//                                context,
+//                                "Ejercicio seleccionado: ${selectedEjercicio.nombre.orEmpty()}",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
                         })
                         Spacer(modifier = Modifier.width(2.dp))
                     }
@@ -151,6 +158,10 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
             }
         }
         Spacer(modifier = Modifier.height(12.dp))
+    }
+    ejercicioSeleccionado?.let { ejercicio ->
+        //Ejercicio(ejercicio = ejercicio)
+        //Ejercicio(ejercicio = ejercicio, onBack = {ejercicioSeleccionado = null})
     }
 }
 @Composable
