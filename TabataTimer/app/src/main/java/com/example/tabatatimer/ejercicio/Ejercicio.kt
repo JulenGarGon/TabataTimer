@@ -1,6 +1,8 @@
 package com.example.tabatatimer.ejercicio
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,17 +25,20 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.tabatatimer.R
 import com.example.tabatatimer.model.Ejercicio
+import com.example.tabatatimer.reproductor.Gif
+import com.example.tabatatimer.reproductor.Reproductor
 import com.example.tabatatimer.ui.theme.Blanco
 import com.example.tabatatimer.ui.theme.Naranja
 import com.example.tabatatimer.ui.theme.Naranja_Oscuro
 import com.example.tabatatimer.ui.theme.Negro
 
-//ejercicio: Ejercicio, onBack: () -> Unit
-@Preview
+
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun Ejercicio(){
+fun Ejercicio(ejercicio: Ejercicio, onBack: () -> Unit){
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -53,7 +58,7 @@ fun Ejercicio(){
                 contentDescription = "Volver",
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { /*onBack()*/ }
+                    .clickable { onBack() }
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -63,13 +68,29 @@ fun Ejercicio(){
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Nombre ejercicio",
+                    text = ejercicio.nombre.orEmpty(),
                     color = Blanco,
                     style = MaterialTheme.typography.titleLarge
                 )
             }
         }
+        Spacer(modifier = Modifier.height(16.dp))
 
+        if (ejercicio.video?.endsWith(".mp4", ignoreCase = true) == true){
+            Reproductor(
+                url = ejercicio.video,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+            )
+        } else {
+            Gif(
+                url = ejercicio.video.toString(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+            )
+        }
 
     }
 }

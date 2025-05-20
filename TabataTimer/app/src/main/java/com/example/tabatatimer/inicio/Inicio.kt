@@ -1,6 +1,8 @@
 package com.example.tabatatimer.inicio
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,6 +46,7 @@ import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Gris_Oscuro
 import com.example.tabatatimer.ui.theme.Negro
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Preview
 @Composable
 fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
@@ -161,7 +164,7 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
     }
     ejercicioSeleccionado?.let { ejercicio ->
         //Ejercicio(ejercicio = ejercicio)
-        //Ejercicio(ejercicio = ejercicio, onBack = {ejercicioSeleccionado = null})
+        Ejercicio(ejercicio = ejercicio, onBack = {ejercicioSeleccionado = null})
     }
 }
 @Composable

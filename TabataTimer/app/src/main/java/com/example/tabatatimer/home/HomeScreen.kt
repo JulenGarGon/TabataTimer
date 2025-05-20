@@ -105,6 +105,7 @@ fun HomeScreen() {
 
 data class TabItem(val titleRes: Int, val iconRes: Int, val selectedIconRes: Int)
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun HomeContent(state: MutableState<String>) {
     Inicio()
@@ -121,6 +122,7 @@ fun CalendarContent(state: MutableState<String>) {
     Calendario()
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MusclesContent(state: MutableState<String>) {
     Musculos()
