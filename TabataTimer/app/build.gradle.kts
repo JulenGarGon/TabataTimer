@@ -59,6 +59,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.5.0")
     implementation("io.coil-kt:coil-gif:2.5.0")
 
+    //TECLADO
+    implementation ("androidx.compose.ui:ui-text:1.5.0")
 
 
     //FIREBASE
