@@ -163,7 +163,12 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
         Spacer(modifier = Modifier.height(12.dp))
     }
     ejercicioSeleccionado?.let { ejercicio ->
-        //Ejercicio(ejercicio = ejercicio)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Negro.copy(alpha = 0.5f)) // opcional: efecto de oscurecido
+                .clickable(enabled = true, onClick = {})      // bloquea clics
+        )
         Ejercicio(ejercicio = ejercicio, onBack = {ejercicioSeleccionado = null})
     }
 }
