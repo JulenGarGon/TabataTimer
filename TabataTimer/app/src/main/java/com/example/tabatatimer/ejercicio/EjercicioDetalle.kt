@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -41,11 +42,14 @@ import com.example.tabatatimer.ui.theme.Blanco
 import com.example.tabatatimer.ui.theme.Naranja
 import com.example.tabatatimer.ui.theme.Naranja_Oscuro
 import com.example.tabatatimer.ui.theme.Negro
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun EjercicioDetalle(ejercicio: Ejercicio, onBack: () -> Unit){
+fun EjercicioDetalle(ejercicio: Ejercicio, onBack: () -> Unit, viewModel: EjercicioDetalleViewModel = EjercicioDetalleViewModel()){
+
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -92,9 +96,17 @@ fun EjercicioDetalle(ejercicio: Ejercicio, onBack: () -> Unit){
 
         Column (horizontalAlignment = Alignment.CenterHorizontally)
         {
-            DatoSet("Peso (kg)", peso)
+            DatoSet("Peso (kg)", peso) { peso = it }
             Spacer(modifier = Modifier.height(5.dp))
-            DatoSet("Repeticiones", repeticiones)
+            DatoSet("Repeticiones", repeticiones) { repeticiones = it }
+
+            val context = LocalContext.current
+
+            Button(onClick = {
+                viewModel.guardarEjercicio(context = context, ejercicio = ejercicio, peso = peso, repeticiones = repeticiones.toInt())
+            }) {
+                Text("Guardar ejercicio")
+            }
         }
     }
 }
@@ -120,7 +132,7 @@ fun Video(ejercicio: Ejercicio){
 }
 
 @Composable
-fun DatoSet(texto: String, valorInicial: Float){
+fun DatoSet(texto: String, valorInicial: Float, onValorChange: (Float) -> Unit){
     var valor by remember { mutableStateOf(valorInicial) }
 
     Row (modifier = Modifier
@@ -183,6 +195,7 @@ fun DatoSet(texto: String, valorInicial: Float){
                         if (texto.equals("Repeticiones")){
                             valor = (valor + 1f)
                         } else valor = (valor + 0.5f)
+                        onValorChange(valor)
                     }
                     .weight(0.3f)
             )

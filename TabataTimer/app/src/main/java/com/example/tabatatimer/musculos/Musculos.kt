@@ -145,6 +145,7 @@ fun Musculos(viewModel: MusculosViewModel = viewModel()) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f)
                 .padding(horizontal = 16.dp)
         ) {
             items(ejerciciosDelDia) { ejercicio ->
@@ -163,7 +164,7 @@ fun Musculos(viewModel: MusculosViewModel = viewModel()) {
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "Peso: ${ejercicio.peso} kg | Reps: ${ejercicio.repeticiones}",
+                            text = "Peso: %.1f kg | Reps: %d".format(ejercicio.peso, ejercicio.repeticiones),
                             color = Blanco,
                             fontSize = 14.sp
                         )

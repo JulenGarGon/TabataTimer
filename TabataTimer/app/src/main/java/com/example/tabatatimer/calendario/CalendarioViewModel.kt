@@ -1,6 +1,8 @@
 package com.example.tabatatimer.calendario
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tabatatimer.model.EjercicioRealizado
@@ -28,6 +30,7 @@ class CalendarioViewModel : ViewModel() {
     private val _fechaSeleccionada = MutableStateFlow<LocalDate?>(null)
     val fechaSeleccionada: MutableStateFlow<LocalDate?> = _fechaSeleccionada
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setFechaSeleccionada(fecha: LocalDate) {
         if (_fechaSeleccionada.value == fecha) return
         _fechaSeleccionada.value = fecha

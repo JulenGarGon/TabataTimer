@@ -69,7 +69,7 @@ class MusculosViewModel : ViewModel() {
             for (doc in docs) {
                 val id = doc.getString("id") ?: continue
                 val nombre = doc.getString("ejercicio") ?: id
-                val peso = doc.getLong("peso")?.toInt() ?: 0
+                val peso = doc.getDouble("peso")?.toFloat() ?: 0f
                 val repeticiones = doc.getLong("repeticiones")?.toInt() ?: 0
 
                 val tarea = db.collection("ejercicios").document(id).get()
@@ -109,7 +109,7 @@ class MusculosViewModel : ViewModel() {
 
     data class EjercicioRealizadoConEsfuerzo(
         val nombre: String,
-        val peso: Int,
+        val peso: Float,
         val repeticiones: Int,
         val esfuerzo: Map<String, Int>
     )

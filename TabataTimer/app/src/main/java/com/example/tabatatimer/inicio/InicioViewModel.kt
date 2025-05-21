@@ -53,7 +53,8 @@ class InicioViewModel: ViewModel() {
                 .await()
                 .documents
                 .mapNotNull { it ->
-                    it.toObject(Ejercicio::class.java)
+                    val ejercicio = it.toObject(Ejercicio::class.java)
+                    ejercicio?.copy(idDocumento = it.id)
                 }
         } catch (e: Exception){
             Log.i("FIRESTORE", e.toString())
