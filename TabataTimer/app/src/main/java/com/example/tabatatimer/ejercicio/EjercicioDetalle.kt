@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text2.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -42,8 +43,8 @@ import com.example.tabatatimer.ui.theme.Blanco
 import com.example.tabatatimer.ui.theme.Naranja
 import com.example.tabatatimer.ui.theme.Naranja_Oscuro
 import com.example.tabatatimer.ui.theme.Negro
-import android.content.Context
 import androidx.compose.ui.platform.LocalContext
+import com.example.tabatatimer.temporizador.Temporizador
 
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -96,9 +97,9 @@ fun EjercicioDetalle(ejercicio: Ejercicio, onBack: () -> Unit, viewModel: Ejerci
 
         Column (horizontalAlignment = Alignment.CenterHorizontally)
         {
-            DatoSet("Peso (kg)", peso) { peso = it }
+            DatoSet("Peso (kg)", peso, onValorChange = { peso = it })
             Spacer(modifier = Modifier.height(5.dp))
-            DatoSet("Repeticiones", repeticiones) { repeticiones = it }
+            DatoSet("Repeticiones", repeticiones, onValorChange = { repeticiones = it })
 
             val context = LocalContext.current
 
@@ -108,6 +109,7 @@ fun EjercicioDetalle(ejercicio: Ejercicio, onBack: () -> Unit, viewModel: Ejerci
                 Text("Guardar ejercicio")
             }
         }
+        Temporizador()
     }
 }
 
@@ -156,7 +158,7 @@ fun DatoSet(texto: String, valorInicial: Float, onValorChange: (Float) -> Unit){
                 modifier = Modifier
                     .clickable {
                         if (texto.equals("Repeticiones")){
-                            valor = (valor - 1f)
+                            valor = (valor - 1f).coerceAtLeast(0f)
                         } else valor = (valor - 0.5f).coerceAtLeast(0f) }
                     .weight(0.3f)
             )

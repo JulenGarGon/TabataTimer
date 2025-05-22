@@ -39,9 +39,11 @@ class EjercicioDetalleViewModel: ViewModel() {
             .set(ejercicioRealizado)
             .addOnSuccessListener {
                 Log.d("EJERCICIO_DETALLE", "Ejercicio guardado")
+                Toast.makeText(context, "Ejercicio guardado", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener{e ->
                 Log.d("EJERCICIO_DETALLE", "Fallo en el guardado: ${e}")
+                Toast.makeText(context, "Fallo en el guardado de ejercicio", Toast.LENGTH_SHORT).show()
             }
     }
 }
