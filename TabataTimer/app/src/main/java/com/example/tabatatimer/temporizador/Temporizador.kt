@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -29,9 +30,9 @@ import com.example.tabatatimer.ui.theme.Blanco
 @Composable
 fun Temporizador(viewModel: TemporizadorViewModel = viewModel()){
 
-    //val valorBarra by viewModel.valorBarra.collectAsState()
     val tiempoRestante by viewModel.tiempoRestante.collectAsState()
     val activo by viewModel.activado.collectAsState()
+    val context = LocalContext.current
 
     var valorBarra by remember { mutableStateOf(viewModel.valorBarra.value) }
 
@@ -62,7 +63,7 @@ fun Temporizador(viewModel: TemporizadorViewModel = viewModel()){
                 contentDescription = "Play",
                 modifier = Modifier
                     .size(48.dp)
-                    .clickable { viewModel.start() }
+                    .clickable { viewModel.startNotificacion(context) }
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -72,7 +73,7 @@ fun Temporizador(viewModel: TemporizadorViewModel = viewModel()){
                 contentDescription = "Pause",
                 modifier = Modifier
                     .size(48.dp)
-                    .clickable { viewModel.pause() }
+                    .clickable { viewModel.pauseNotificacion(context) }
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -82,7 +83,7 @@ fun Temporizador(viewModel: TemporizadorViewModel = viewModel()){
                 contentDescription = "Reset",
                 modifier = Modifier
                     .size(48.dp)
-                    .clickable { viewModel.reset() }
+                    .clickable { viewModel.resetNotificacion(context) }
             )
 
         }

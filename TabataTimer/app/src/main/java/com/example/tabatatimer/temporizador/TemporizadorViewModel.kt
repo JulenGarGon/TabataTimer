@@ -1,5 +1,8 @@
 package com.example.tabatatimer.temporizador
 
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
@@ -49,5 +52,48 @@ class TemporizadorViewModel: ViewModel() {
     fun reset(){
         pause()
         _tiempoRestante.value = _valorBarra.value.toInt()
+    }
+
+    private fun enviarNotificacion(context: Context, accion: String) {
+        val intent = Intent(context, TemporizadorNotificacionService::class.java).apply {
+            this.action = accion
+            if (action == "START" || action == "UPDATE"){
+                putExtra("tiempo", _tiempoRestante.value)
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) context.startForegroundService(intent)
+        else context.startService(intent)
+    }
+
+    fun startNotificacion(context: Context){
+        if (_activado.value || _tiempoRestante.value <= 0) return
+
+        _activado.value = true
+
+        enviarNotificacion(context, "START")
+
+        cuentaAtras = viewModelScope.launch {
+            while (_tiempoRestante.value > 0 && _activado.value) {
+                enviarNotificacion(context, "UPDATE")
+                delay(1000L)
+                _tiempoRestante.value = _tiempoRestante.value - 1
+            }
+            _activado.value = false
+            enviarNotificacion(context, "STOP")
+        }
+    }
+
+    fun pauseNotificacion(context: Context){
+        if (!_activado.value) return
+
+        pause()
+        enviarNotificacion(context, "STOP")
+    }
+
+    fun resetNotificacion(context: Context){
+        if (_tiempoRestante.value == _valorBarra.value.toInt()) return
+
+        reset()
+        enviarNotificacion(context, "STOP")
     }
 }

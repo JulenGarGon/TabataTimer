@@ -60,8 +60,12 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.5.0")
 
     //TECLADO
+
     implementation ("androidx.compose.ui:ui-text:1.5.0")
 
+    //NOTIFICACIONES
+
+    implementation("androidx.core:core-ktx:1.16.0")
 
     //FIREBASE
 
