@@ -109,4 +109,30 @@ class InicioViewModel: ViewModel() {
             emptyList()
         }
     }
+
+    private val _ejerciciosUsuario = MutableStateFlow<List<Ejercicio>>(emptyList())
+    val ejerciciosUsuario: StateFlow<List<Ejercicio>> = _ejerciciosUsuario
+
+    fun getAllEjerciciosUsuario(correo: String) {
+        viewModelScope.launch {
+            try {
+                val docs = db.collection("ejercicio_usuario")
+                    .document(correo)
+                    .collection("ejercicios")
+                    .get()
+                    .await()
+
+                val lista = docs.mapNotNull { doc ->
+                    doc.toObject(Ejercicio::class.java)?.copy(idDocumento = doc.id)
+                }
+
+                _ejerciciosUsuario.value = lista
+            } catch (e: Exception) {
+                Log.i("FIRESTORE", "Error al cargar ejercicios usuario: ${e.message}")
+            }
+        }
+    }
+
+
+
 }

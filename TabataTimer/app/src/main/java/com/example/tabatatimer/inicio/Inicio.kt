@@ -22,6 +22,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,6 +42,9 @@ import com.example.tabatatimer.model.Ejercicio
 import com.example.tabatatimer.model.Musculo
 import com.example.tabatatimer.model.Sets
 import com.example.tabatatimer.nuevoejercicio.NuevoEjercicio
+import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.example.tabatatimer.ui.theme.Blanco
 import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Gris_Oscuro
@@ -49,7 +53,7 @@ import com.example.tabatatimer.ui.theme.Negro
 @RequiresApi(Build.VERSION_CODES.P)
 @Preview
 @Composable
-fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
+fun Inicio(viewModel: InicioViewModel = viewModel()){
     val ejercicios: State<List<Ejercicio>> = viewModel.ejercicio.collectAsState()
     val sets: State<List<Sets>> = viewModel.set.collectAsState()
     val musculos: State<List<Musculo>> = viewModel.musculo.collectAsState()
@@ -58,6 +62,14 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
 
     var ejercicioSeleccionado by remember { mutableStateOf<Ejercicio?>(null) }
     var crearNuevoEjercicio by remember { mutableStateOf(false) }
+
+    LaunchedEffect(true) {
+        val correo = FirebaseAuth.getInstance().currentUser?.email
+        if (correo != null) {
+            viewModel.getAllEjerciciosUsuario(correo)
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -92,6 +104,38 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
                 }
             }
         }
+        Spacer(modifier = Modifier.height(12.dp))
+
+        //EJERCICIOS USUARIO
+        val ejerciciosUsuario by viewModel.ejerciciosUsuario.collectAsState()
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.3f)
+                .background(Brush.horizontalGradient(listOf(Gris_Claro, Blanco, Gris_Oscuro))),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "MIS EJERCICIOS",
+                    color = Negro
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                LazyRow {
+                    items(ejerciciosUsuario) {
+                        EjercicioItem(ejercicio = it, onItemSelected = { selectedEjercicio ->
+                            ejercicioSeleccionado = selectedEjercicio
+                        })
+                        Spacer(modifier = Modifier.width(2.dp))
+                    }
+                }
+            }
+        }
+
         Spacer(modifier = Modifier.height(12.dp))
         //SETS
         Box(
@@ -188,7 +232,13 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
                 .background(color = Negro.copy(alpha = 0.5f))
                 .clickable(enabled = true, onClick = {})
         )
-        NuevoEjercicio(onBack = { crearNuevoEjercicio = false })
+        NuevoEjercicio(onBack = {
+            crearNuevoEjercicio = false
+            val correo = FirebaseAuth.getInstance().currentUser?.email
+            if (correo != null) {
+                viewModel.getAllEjerciciosUsuario(correo)
+            }
+        })
     }
 }
 @Composable

@@ -80,7 +80,10 @@ class NuevoEjercicioViewModel : ViewModel() {
                     "video" to video
                 )
 
-                usuarioRef.set(mapOf(idDocumento to datos), SetOptions.merge())
+                usuarioRef.collection("ejercicios")
+                    .document(idDocumento)
+                    .set(datos, SetOptions.merge())
+
                     .addOnSuccessListener {
                         Toast.makeText(context, "Ejercicio guardado", Toast.LENGTH_SHORT).show()
                         resetFormulario()

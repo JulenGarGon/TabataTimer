@@ -72,23 +72,37 @@ class MusculosViewModel : ViewModel() {
                 val peso = doc.getDouble("peso")?.toFloat() ?: 0f
                 val repeticiones = doc.getLong("repeticiones")?.toInt() ?: 0
 
-                val tarea = db.collection("ejercicios").document(id).get()
-                    .addOnSuccessListener { ejercicioDoc ->
-                        val esfuerzoMap = (ejercicioDoc.get("esfuerzo") as? Map<String, Long>)?.mapValues { it.value.toInt() } ?: emptyMap()
+                val userEjRef = db.collection("ejercicio_usuario")
+                    .document(userEmail)
+                    .collection("ejercicios")
+                    .document(id)
 
-                        esfuerzoMap.forEach { (musculo, valor) ->
-                            esfuerzoAcumulado[musculo] = esfuerzoAcumulado.getOrDefault(musculo, 0) + valor
-                        }
+                val publicEjRef = db.collection("ejercicios").document(id)
 
-                        datosLocales.add(
-                            EjercicioRealizadoConEsfuerzo(
-                                nombre = nombre,
-                                peso = peso,
-                                repeticiones = repeticiones,
-                                esfuerzo = esfuerzoMap
-                            )
-                        )
+                val tarea = publicEjRef.get().continueWithTask { publicTask ->
+                    val publicDoc = publicTask.result
+                    if (publicDoc.exists()) {
+                        return@continueWithTask Tasks.forResult(publicDoc)
+                    } else {
+                        return@continueWithTask userEjRef.get()
                     }
+                }.addOnSuccessListener { ejercicioDoc ->
+                    val esfuerzoMap = (ejercicioDoc.get("esfuerzo") as? Map<String, Long>)?.mapValues { it.value.toInt() } ?: emptyMap()
+
+                    esfuerzoMap.forEach { (musculo, valor) ->
+                        esfuerzoAcumulado[musculo] = esfuerzoAcumulado.getOrDefault(musculo, 0) + valor
+                    }
+
+                    datosLocales.add(
+                        EjercicioRealizadoConEsfuerzo(
+                            nombre = nombre,
+                            peso = peso,
+                            repeticiones = repeticiones,
+                            esfuerzo = esfuerzoMap
+                        )
+                    )
+                }
+
 
                 tareas.add(tarea)
             }

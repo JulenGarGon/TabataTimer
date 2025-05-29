@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +36,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -97,7 +100,18 @@ fun NuevoEjercicio(viewModel: NuevoEjercicioViewModel = viewModel(), onBack: () 
             value = viewModel.nombre,
             onValueChange = { viewModel.onNombreChanged(it) },
             label = { Text("Nombre del ejercicio") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Blanco,
+                unfocusedIndicatorColor = Blanco,
+                focusedLabelColor = Blanco,
+                unfocusedLabelColor = Blanco,
+                cursorColor = Blanco,
+                focusedTextColor = Blanco,
+                unfocusedTextColor = Blanco
+            )
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -118,7 +132,18 @@ fun NuevoEjercicio(viewModel: NuevoEjercicioViewModel = viewModel(), onBack: () 
             value = viewModel.imagen,
             onValueChange = { viewModel.onImagenChanged(it) },
             label = { Text("Url de imagen") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Blanco,
+                unfocusedIndicatorColor = Blanco,
+                focusedLabelColor = Blanco,
+                unfocusedLabelColor = Blanco,
+                cursorColor = Blanco,
+                focusedTextColor = Blanco,
+                unfocusedTextColor = Blanco
+            )
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -127,7 +152,18 @@ fun NuevoEjercicio(viewModel: NuevoEjercicioViewModel = viewModel(), onBack: () 
             value = viewModel.video,
             onValueChange = { viewModel.onVideoChanged(it) },
             label = { Text("URL de video/gif") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Blanco,
+                unfocusedIndicatorColor = Blanco,
+                focusedLabelColor = Blanco,
+                unfocusedLabelColor = Blanco,
+                cursorColor = Blanco,
+                focusedTextColor = Blanco,
+                unfocusedTextColor = Blanco
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -153,21 +189,34 @@ fun GrupoMuscularDropdown(musculos: List<String>, viewModel: NuevoEjercicioViewM
             value = selected.replace("_", " "),
             onValueChange = {},
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("Grupo muscular principal") },
+            label = { Text("Grupo muscular principal", color = Blanco) },
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_arrow_drop_down),
-                        contentDescription = "Expand"
+                        contentDescription = "Expand",
+                        tint = Blanco
                     )
                 }
-            }
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Blanco,
+                unfocusedIndicatorColor = Blanco,
+                focusedLabelColor = Blanco,
+                unfocusedLabelColor = Blanco,
+                cursorColor = Blanco,
+                focusedTextColor = Blanco,
+                unfocusedTextColor = Blanco
+            )
         )
+
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             musculos.forEach { musculo ->
                 DropdownMenuItem(
-                    text = { Text(musculo.replace("_", " ")) },
+                    text = { Text(musculo.replace("_", " "), color = Blanco) },
                     onClick = {
                         viewModel.onGrupoMuscularChanged(musculo)
                         expanded = false
@@ -226,15 +275,28 @@ fun SetDropdown(viewModel: NuevoEjercicioViewModel) {
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_drop_down),
-                        contentDescription = "Expand"
+                        contentDescription = "Expand",
+                        tint = Blanco
                     )
                 }
-            }
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Blanco,
+                unfocusedIndicatorColor = Blanco,
+                focusedLabelColor = Blanco,
+                unfocusedLabelColor = Blanco,
+                cursorColor = Blanco,
+                focusedTextColor = Blanco,
+                unfocusedTextColor = Blanco
+            )
         )
+
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             sets.forEach { item ->
                 DropdownMenuItem(
-                    text = { Text(item) },
+                    text = { Text(item, color = Blanco) },
                     onClick = {
                         viewModel.onSetChanged(item.replace(" ", "_"))
                         expanded = false
@@ -244,4 +306,5 @@ fun SetDropdown(viewModel: NuevoEjercicioViewModel) {
         }
     }
 }
+
 
