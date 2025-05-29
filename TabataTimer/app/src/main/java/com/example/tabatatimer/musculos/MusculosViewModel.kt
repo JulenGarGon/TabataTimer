@@ -64,7 +64,11 @@ class MusculosViewModel : ViewModel() {
 
             val tareas = mutableListOf<Task<DocumentSnapshot>>()
             val datosLocales = mutableListOf<EjercicioRealizadoConEsfuerzo>()
-            val esfuerzoAcumulado = mutableMapOf<String, Int>()
+
+            val esfuerzoPonderadoSum = mutableMapOf<String, Float>()
+            val esfuerzoPonderadoDivisor = mutableMapOf<String, Float>()
+
+
 
             for (doc in docs) {
                 val id = doc.getString("id") ?: continue
@@ -90,8 +94,12 @@ class MusculosViewModel : ViewModel() {
                     val esfuerzoMap = (ejercicioDoc.get("esfuerzo") as? Map<String, Long>)?.mapValues { it.value.toInt() } ?: emptyMap()
 
                     esfuerzoMap.forEach { (musculo, valor) ->
-                        esfuerzoAcumulado[musculo] = esfuerzoAcumulado.getOrDefault(musculo, 0) + valor
+                        val esfuerzoReal = valor * peso * repeticiones
+                        esfuerzoPonderadoSum[musculo] = esfuerzoPonderadoSum.getOrDefault(musculo, 0f) + esfuerzoReal
+                        esfuerzoPonderadoDivisor[musculo] = esfuerzoPonderadoDivisor.getOrDefault(musculo, 0f) + (peso * repeticiones)
                     }
+
+
 
                     datosLocales.add(
                         EjercicioRealizadoConEsfuerzo(
@@ -108,12 +116,15 @@ class MusculosViewModel : ViewModel() {
             }
 
             Tasks.whenAllSuccess<DocumentSnapshot>(tareas).addOnSuccessListener {
-                val normalizado = esfuerzoAcumulado.mapValues { (_, valor) ->
-                    (valor.coerceAtMost(10) / 10f)
+                val normalizado = esfuerzoPonderadoSum.mapValues { (musculo, suma) ->
+                    val divisor = esfuerzoPonderadoDivisor[musculo] ?: 1f
+                    val media = suma / divisor
+                    (media.coerceAtMost(10f)) / 10f
                 }
 
-                Log.d("MUSCULOS_VIEWMODEL", "Esfuerzo final: $esfuerzoAcumulado")
-                Log.d("MUSCULOS_VIEWMODEL", "Normalizado: $normalizado")
+
+//                Log.d("MUSCULOS_VIEWMODEL", "Esfuerzo final: $esfuerzoAcumulado")
+//                Log.d("MUSCULOS_VIEWMODEL", "Normalizado: $normalizado")
 
                 _ejerciciosDelDia.value = datosLocales.toList()
                 _esfuerzoMuscular.value = normalizado.toMap()
