@@ -1,7 +1,6 @@
 package com.example.tabatatimer.musculos
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tabatatimer.R
+import com.example.tabatatimer.model.Musculos
 import com.example.tabatatimer.ui.theme.Blanco
-import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Gris_Oscuro
 import com.example.tabatatimer.ui.theme.Negro
 
@@ -51,25 +50,25 @@ fun Musculos(viewModel: MusculosViewModel = viewModel()) {
     val esfuerzoMuscular = viewModel.esfuerzoMuscular.value
 
     val imagenesSuperpuestas = listOf(
-        OverlayImage(R.drawable.abdominales, Offset(-77.3f, -15.2f), "abdominales"),
-        OverlayImage(R.drawable.antebrazos, Offset(-70.5f, -15.2f), "antebrazos"),
-        OverlayImage(R.drawable.antebrazostrasero, Offset(67.7f, 5.3f), "antebrazostrasero"),
-        OverlayImage(R.drawable.biceps, Offset(-76f, -31.3f), "biceps"),
-        OverlayImage(R.drawable.cuadriceps, Offset(-67f, 32f), "cuadriceps"),
-        OverlayImage(R.drawable.cuadricepstrasero, Offset(59f, -27f), "cuadricepstrasero"),
-        OverlayImage(R.drawable.dorsal, Offset(-70.5f, 0f), "dorsal"),
-        OverlayImage(R.drawable.espalda, Offset(63.5f, -54.5f), "espalda"),
-        OverlayImage(R.drawable.gluteos, Offset(64f, -0.5f), "gluteos"),
-        OverlayImage(R.drawable.hombrosfrontal, Offset(-67f, 12.5f), "hombro"),
-        OverlayImage(R.drawable.hombrostrasera, Offset(52f, -0.5f), "hombro"),
-        OverlayImage(R.drawable.muslofrontal, Offset(-80f, 32.6f), "muslo"),
-        OverlayImage(R.drawable.muslotrasero, Offset(58f, -45f), "muslotrasero"),
-        OverlayImage(R.drawable.oblicuo, Offset(-68f, -22f), "oblicuo"),
-        OverlayImage(R.drawable.oblicuotrasero, Offset(61.5f, -51f), "oblicuotrasero"),
-        OverlayImage(R.drawable.pecho, Offset(-69f, -25f), "pectoral"),
-        OverlayImage(R.drawable.piernafrontal, Offset(-4.5f, -23f), "pierna"),
-        OverlayImage(R.drawable.piernatrasera, Offset(64.5f, -34.5f), "piernatrasero"),
-        OverlayImage(R.drawable.triceps, Offset(64.5f, -37f), "triceps")
+        OverlayImage(R.drawable.abdominales, Offset(-77.3f, -15.2f), Musculos.abdominales.toString()),
+        OverlayImage(R.drawable.antebrazos, Offset(-70.5f, -15.2f), Musculos.antebrazos.toString()),
+        OverlayImage(R.drawable.antebrazostrasero, Offset(67.7f, 5.3f), Musculos.antebrazos_traseros.toString()),
+        OverlayImage(R.drawable.biceps, Offset(-76f, -31.3f), Musculos.biceps.toString()),
+        OverlayImage(R.drawable.cuadriceps, Offset(-67f, 32f), Musculos.cuadriceps.toString()),
+        OverlayImage(R.drawable.cuadricepstrasero, Offset(59f, -27f), Musculos.cuadriceps_traseros.toString()),
+        OverlayImage(R.drawable.dorsal, Offset(-70.5f, 0f), Musculos.dorsal.toString()),
+        OverlayImage(R.drawable.espalda, Offset(63.5f, -54.5f), Musculos.espalda.toString()),
+        OverlayImage(R.drawable.gluteos, Offset(64f, -0.5f), Musculos.gluteos.toString()),
+        OverlayImage(R.drawable.hombrosfrontal, Offset(-67f, 12.5f), Musculos.hombro.toString()),
+        OverlayImage(R.drawable.hombrostrasera, Offset(52f, -0.5f), Musculos.hombro.toString()),
+        OverlayImage(R.drawable.muslofrontal, Offset(-80f, 32.6f), Musculos.muslo.toString()),
+        OverlayImage(R.drawable.muslotrasero, Offset(58f, -45f), Musculos.muslo_trasero.toString()),
+        OverlayImage(R.drawable.oblicuo, Offset(-68f, -22f), Musculos.oblicuo.toString()),
+        OverlayImage(R.drawable.oblicuotrasero, Offset(61.5f, -51f), Musculos.oblicuo_trasero.toString()),
+        OverlayImage(R.drawable.pecho, Offset(-69f, -25f), Musculos.pectoral.toString()),
+        OverlayImage(R.drawable.piernafrontal, Offset(-4.5f, -23f), Musculos.pierna.toString()),
+        OverlayImage(R.drawable.piernatrasera, Offset(64.5f, -34.5f), Musculos.pierna_trasero.toString()),
+        OverlayImage(R.drawable.triceps, Offset(64.5f, -37f), Musculos.triceps.toString())
     )
 
     Column(
@@ -124,8 +123,8 @@ fun Musculos(viewModel: MusculosViewModel = viewModel()) {
             )
 
             imagenesSuperpuestas.forEach { imagen ->
-                val opacidad = esfuerzoMuscular[imagen.musculo] ?: 0f
-                Log.d("MUSCULOS_SCREEN", "Mapa esfuerzoMuscular: $esfuerzoMuscular")
+                val opacidad = esfuerzoMuscular[imagen.musculo.lowercase()] ?: 0f
+//                Log.d("MUSCULOS_SCREEN", "Mapa esfuerzoMuscular: $esfuerzoMuscular")
                 Image(
                     painter = painterResource(id = imagen.id),
                     contentDescription = null,

@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -38,6 +40,7 @@ import com.example.tabatatimer.ejercicio.EjercicioDetalle
 import com.example.tabatatimer.model.Ejercicio
 import com.example.tabatatimer.model.Musculo
 import com.example.tabatatimer.model.Sets
+import com.example.tabatatimer.nuevoejercicio.NuevoEjercicio
 import com.example.tabatatimer.ui.theme.Blanco
 import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Gris_Oscuro
@@ -54,6 +57,7 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
     val context = LocalContext.current
 
     var ejercicioSeleccionado by remember { mutableStateOf<Ejercicio?>(null) }
+    var crearNuevoEjercicio by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -82,11 +86,6 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
                     items(ejercicios.value) {
                         EjercicioItem(ejercicio = it, onItemSelected = { selectedEjercicio ->
                             ejercicioSeleccionado = selectedEjercicio
-//                            Toast.makeText(
-//                                context,
-//                                "Ejercicio seleccionado: ${selectedEjercicio.nombre.orEmpty()}",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
                         })
                         Spacer(modifier = Modifier.width(2.dp))
                     }
@@ -159,14 +158,37 @@ fun Inicio(viewModel: InicioViewModel = InicioViewModel()){
         }
         Spacer(modifier = Modifier.height(12.dp))
     }
+    Box(modifier = Modifier.fillMaxSize()
+        .padding(bottom = 16.dp, end = 16.dp),
+        contentAlignment = Alignment.BottomEnd) {
+            FloatingActionButton(
+                onClick = {
+                    crearNuevoEjercicio = true
+                },
+                containerColor = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            ) {
+                Text(text = "+")
+            }
+    }
     ejercicioSeleccionado?.let { ejercicio ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Negro.copy(alpha = 0.5f)) // opcional: efecto de oscurecido
-                .clickable(enabled = true, onClick = {})      // bloquea clics
+                .background(color = Negro.copy(alpha = 0.5f))
+                .clickable(enabled = true, onClick = {})
         )
         EjercicioDetalle(ejercicio = ejercicio, onBack = {ejercicioSeleccionado = null})
+    }
+
+    if (crearNuevoEjercicio) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Negro.copy(alpha = 0.5f))
+                .clickable(enabled = true, onClick = {})
+        )
+        NuevoEjercicio(onBack = { crearNuevoEjercicio = false })
     }
 }
 @Composable

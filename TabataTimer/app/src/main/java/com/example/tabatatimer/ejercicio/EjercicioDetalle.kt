@@ -54,8 +54,7 @@ fun EjercicioDetalle(ejercicio: Ejercicio, onBack: () -> Unit, viewModel: Ejerci
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(Negro, Negro, Naranja_Oscuro, Naranja)))
-            .padding(16.dp),
+            .background(Brush.verticalGradient(listOf(Negro, Negro, Naranja_Oscuro, Naranja))),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Row (

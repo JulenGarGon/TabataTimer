@@ -1,14 +1,9 @@
 package com.example.tabatatimer.home
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
@@ -33,8 +28,6 @@ import com.example.tabatatimer.calendario.Calendario
 import com.example.tabatatimer.inicio.Inicio
 import com.example.tabatatimer.musculos.Musculos
 import com.example.tabatatimer.resumen.Resumen
-import com.example.tabatatimer.ui.theme.Gris_Claro
-import com.example.tabatatimer.ui.theme.Negro
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
@@ -75,17 +68,6 @@ fun HomeScreen() {
                         onClick = { selectedTab = index }
                     )
                 }
-            }
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    //TODO
-                },
-                containerColor = MaterialTheme.colorScheme.primary,
-                shape = CircleShape
-            ) {
-                Text(text = "+")
             }
         }
     ) { innerPadding ->
