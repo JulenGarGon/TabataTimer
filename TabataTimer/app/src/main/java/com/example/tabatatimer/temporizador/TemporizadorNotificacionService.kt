@@ -35,8 +35,16 @@ class TemporizadorNotificacionService : Service(){
                 }
             }
             "STOP" -> {
-                stopForeground(STOP_FOREGROUND_REMOVE)
-                stopSelf()
+                try {
+                    stopForeground(STOP_FOREGROUND_REMOVE)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                try {
+                    stopSelf()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
         return START_NOT_STICKY

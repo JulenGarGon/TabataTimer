@@ -69,7 +69,6 @@ class TemporizadorViewModel: ViewModel() {
         if (_activado.value || _tiempoRestante.value <= 0) return
 
         _activado.value = true
-
         enviarNotificacion(context, "START")
 
         cuentaAtras = viewModelScope.launch {
@@ -78,10 +77,13 @@ class TemporizadorViewModel: ViewModel() {
                 delay(1000L)
                 _tiempoRestante.value = _tiempoRestante.value - 1
             }
+
             _activado.value = false
+            _tiempoRestante.value = _valorBarra.value.toInt()
             enviarNotificacion(context, "STOP")
         }
     }
+
 
     fun pauseNotificacion(context: Context){
         if (!_activado.value) return
