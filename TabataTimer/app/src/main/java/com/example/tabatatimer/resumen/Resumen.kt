@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -58,28 +60,59 @@ fun Resumen(viewModel: ResumenViewModel = viewModel()){
 }
 
 @Composable
-fun EjercicioResumen(topEjercicio: TopEjercicio, onItemSelected: (TopEjercicio) -> Unit){
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(100.dp)
-        .padding(top = 5.dp, bottom = 5.dp, end = 5.dp, start = 5.dp)
-        .background(Negro)
-    ){
-        Column {
-            Text(text = "Ejercicio: ${topEjercicio.nombre}", color = Blanco)
-            Row (
-                horizontalArrangement = Arrangement.Center
-            ){
-                Text(text = "Repeticiones: ${topEjercicio.repeticiones}",
-                    color = Blanco,
-                    modifier = Modifier.weight(0.4f))
-                Spacer(modifier = Modifier.weight(0.2f))
-                Text(text = "Peso: ${topEjercicio.peso}",
-                    color = Blanco,
-                    modifier = Modifier.weight(0.4f))
-            }
-        }
-
+fun EjercicioResumen(topEjercicio: TopEjercicio, onItemSelected: (TopEjercicio) -> Unit) {
+    val pesoColor = when {
+        topEjercicio.pesoUltimo < topEjercicio.pesoMejor -> androidx.compose.ui.graphics.Color.Red
+        topEjercicio.pesoUltimo > topEjercicio.pesoMejor -> androidx.compose.ui.graphics.Color.Green
+        else -> Blanco
     }
 
+    val repsColor = when {
+        topEjercicio.repeticionesUltimo < topEjercicio.repeticionesMejor -> androidx.compose.ui.graphics.Color.Red
+        topEjercicio.repeticionesUltimo > topEjercicio.repeticionesMejor -> androidx.compose.ui.graphics.Color.Green
+        else -> Blanco
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .padding(5.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Negro)
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize().padding(8.dp)
+        ) {
+            Text(text = topEjercicio.nombre, color = Blanco)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row {
+                    Text(text = "Última: ", color = Blanco)
+                    Text(
+                        text = "${topEjercicio.pesoUltimo} kg",
+                        color = pesoColor
+                    )
+                    Text(text = " - ", color = Blanco)
+                    Text(
+                        text = "${topEjercicio.repeticionesUltimo} reps",
+                        color = repsColor
+                    )
+                }
+                Row {
+                    Text(text = "Mejor: ", color = Blanco)
+                    Text(text = "${topEjercicio.pesoMejor} kg", color = Blanco)
+                    Text(text = " - ", color = Blanco)
+                    Text(text = "${topEjercicio.repeticionesMejor} reps", color = Blanco)
+                }
+            }
+        }
+    }
 }

@@ -27,13 +27,52 @@ class ResumenViewModel: ViewModel() {
     init {
         getResumen()
     }
-    private fun getResumen(){
-        viewModelScope.launch {
-            val result: List<TopEjercicio> = withContext(Dispatchers.IO){
-                getAllResumen()
+
+    private fun getResumen() {
+        val usuarioEmail = usuario ?: return
+
+        db.collection("resumen")
+            .document(usuarioEmail)
+            .collection("ultima")
+            .addSnapshotListener { snapshots, error ->
+                if (error != null || snapshots == null) {
+                    Log.w("FIRESTORE", "Error al escuchar cambios en resumen", error)
+                    return@addSnapshotListener
+                }
+
+                viewModelScope.launch {
+                    val lista = mutableListOf<TopEjercicio>()
+
+                    for (docUltima in snapshots.documents) {
+                        val nombre = docUltima.id.replace("_", " ").replaceFirstChar { it.uppercase() }
+
+                        val pesoUltimo = docUltima.getDouble("peso") ?: 0.0
+                        val repsUltimo = docUltima.getLong("repeticiones")?.toInt() ?: 0
+
+                        val docMejor = db.collection("resumen")
+                            .document(usuarioEmail)
+                            .collection("mejor")
+                            .document(docUltima.id)
+                            .get()
+                            .await()
+
+                        val pesoMejor = docMejor.getDouble("peso") ?: 0.0
+                        val repsMejor = docMejor.getLong("repeticiones")?.toInt() ?: 0
+
+                        lista.add(
+                            TopEjercicio(
+                                nombre = nombre,
+                                pesoUltimo = pesoUltimo,
+                                repeticionesUltimo = repsUltimo,
+                                pesoMejor = pesoMejor,
+                                repeticionesMejor = repsMejor
+                            )
+                        )
+                    }
+
+                    _ejercicios.value = lista
+                }
             }
-            _ejercicios.value = result
-        }
     }
 
     suspend fun getAllResumen(): List<TopEjercicio>{
@@ -41,20 +80,39 @@ class ResumenViewModel: ViewModel() {
         val listaFinal = mutableListOf<TopEjercicio>()
 
         return try {
-            val nombresEjercicios = db.collection("ejercicios")
+            val usuarioEmail = usuario ?: return emptyList()
+
+            val ultimosEjercicios = db.collection("resumen")
+                .document(usuarioEmail)
+                .collection("ultima")
                 .get()
                 .await()
-                .map { it.id }
 
-            for (nombre in nombresEjercicios){
-                val ejercicio = db.collection("resumen")
-                    .document(usuario.toString())
-                    .collection(nombre)
+            for (ejercicio in ultimosEjercicios){
+                val nombre = ejercicio.id.replace("_", " ").replaceFirstChar { it.uppercase() }
+
+                val pesoUltimo = ejercicio.getDouble("peso") ?: 0.0
+                val repsUltimo = ejercicio.getLong("repeticiones")?.toInt() ?: 0
+
+                val ejercicioMejor = db.collection("resumen")
+                    .document(usuarioEmail)
+                    .collection("mejor")
+                    .document(ejercicio.id)
                     .get()
                     .await()
 
-                val ejercicios = ejercicio.mapNotNull { it.toObject(TopEjercicio::class.java) }
-                listaFinal.addAll(ejercicios)
+                val pesoMejor = ejercicioMejor.getDouble("peso") ?: 0.0
+                val repsMejor = ejercicioMejor.getLong("repeticiones")?.toInt() ?: 0
+
+                listaFinal.add(
+                    TopEjercicio(
+                        nombre = nombre,
+                        pesoUltimo = pesoUltimo,
+                        pesoMejor = pesoMejor,
+                        repeticionesUltimo = repsUltimo,
+                        repeticionesMejor = repsMejor
+                    )
+                )
             }
             listaFinal
         } catch (e: Exception){

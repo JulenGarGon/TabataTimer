@@ -45,5 +45,38 @@ class EjercicioDetalleViewModel: ViewModel() {
                 Log.d("EJERCICIO_DETALLE", "Fallo en el guardado: ${e}")
                 Toast.makeText(context, "Fallo en el guardado de ejercicio", Toast.LENGTH_SHORT).show()
             }
+
+        val ejercicioNombre = ejercicio.nombre ?.lowercase()?.replace(" ", "_") ?: return
+
+        val ultimoEjercicio = db.collection("resumen")
+            .document(email)
+            .collection("ultima")
+            .document(ejercicioNombre)
+
+        val ejercicioUltimo = hashMapOf(
+            "nombre" to ejercicio.nombre,
+            "peso" to peso,
+            "repeticiones" to repeticiones
+        )
+
+        ultimoEjercicio.set(ejercicioUltimo)
+
+        val mejorEjercicio = db.collection("resumen")
+            .document(email)
+            .collection("mejor")
+            .document(ejercicioNombre)
+
+        val nuevoResultado = peso * repeticiones
+
+        mejorEjercicio.get().addOnSuccessListener { doc ->
+            val pesoGuardado = doc.getDouble("peso") ?: 0.0
+            val repeticionesGuardadas = (doc.getLong("repeticiones") ?: 0L).toInt()
+            val resultadoActual = pesoGuardado * repeticionesGuardadas
+
+            if (nuevoResultado > resultadoActual){
+                mejorEjercicio.set(ejercicioRealizado)
+            }
+        }
+
     }
 }
