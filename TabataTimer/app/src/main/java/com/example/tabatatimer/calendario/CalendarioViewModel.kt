@@ -77,4 +77,23 @@ class CalendarioViewModel : ViewModel() {
             emptyList()
         }
     }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun eliminarEjercicio(ejercicio: EjercicioRealizado, fecha: LocalDate) {
+        val fechaKey = "${fecha.dayOfMonth}-${fecha.monthValue}-${fecha.year}"
+        val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: return
+
+        Firebase.firestore.collection("ej_realizado")
+            .document(userEmail)
+            .collection(fechaKey)
+            .whereEqualTo("ejercicio", ejercicio.ejercicio)
+            .whereEqualTo("peso", ejercicio.peso)
+            .whereEqualTo("repeticiones", ejercicio.repeticiones)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                for (doc in snapshot.documents) {
+                    doc.reference.delete()
+                }
+            }
+    }
+
 }

@@ -1,41 +1,24 @@
 package com.example.tabatatimer.calendario
 
 import android.os.Build
-import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.example.tabatatimer.model.EjercicioRealizado
 import com.example.tabatatimer.ui.theme.Blanco
 import com.example.tabatatimer.ui.theme.Gris_Claro
@@ -48,21 +31,50 @@ import java.time.LocalDate
 @Composable
 fun Calendario(viewModel: CalendarioViewModel = CalendarioViewModel()) {
     val calendar = CalendarLocale()
-    //var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-
     val ejerciciosRealizados by viewModel.ejercicioDia.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
+    var ejercicioSeleccionado by remember { mutableStateOf<EjercicioRealizado?>(null) }
 
-    val fechaInicial = remember(selectedDate) {
-        "${selectedDate.dayOfMonth}-${selectedDate.monthValue}-${selectedDate.year}"
-    }
-
-    //val ejerciciosRealizados by viewModel.ejercicioDia.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(selectedDate) {
         viewModel.setFechaSeleccionada(selectedDate)
     }
 
+    if (showDialog && ejercicioSeleccionado != null) {
+        AlertDialog(
+            onDismissRequest = {
+                Toast.makeText(context, "Borrado cancelado", Toast.LENGTH_SHORT).show()
+                showDialog = false
+                ejercicioSeleccionado = null
+                (context as? androidx.activity.ComponentActivity)?.recreate()
+            },
+            title = { Text("Eliminar ejercicio") },
+            text = { Text("¿Estás seguro de que quieres eliminar este ejercicio?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.eliminarEjercicio(ejercicioSeleccionado!!, selectedDate)
+                    Toast.makeText(context, "Borrado con éxito", Toast.LENGTH_SHORT).show()
+                    showDialog = false
+                    ejercicioSeleccionado = null
+                    (context as? androidx.activity.ComponentActivity)?.recreate()
+                }) {
+                    Text("Eliminar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    Toast.makeText(context, "Borrado cancelado", Toast.LENGTH_SHORT).show()
+                    showDialog = false
+                    ejercicioSeleccionado = null
+                    (context as? androidx.activity.ComponentActivity)?.recreate()
+                }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 
     Scaffold { innerPadding ->
         Column(modifier = Modifier.fillMaxSize()) {
@@ -80,7 +92,6 @@ fun Calendario(viewModel: CalendarioViewModel = CalendarioViewModel()) {
                         selectedDate = date
                     }
                 )
-
             }
 
             Text(
@@ -118,7 +129,10 @@ fun Calendario(viewModel: CalendarioViewModel = CalendarioViewModel()) {
                             }
                         } else {
                             items(ejerciciosRealizados) {
-                                EjerciciosRealizados(it)
+                                EjerciciosRealizados(it) { ejercicio ->
+                                    ejercicioSeleccionado = ejercicio
+                                    showDialog = true
+                                }
                             }
                         }
                     }
@@ -128,9 +142,11 @@ fun Calendario(viewModel: CalendarioViewModel = CalendarioViewModel()) {
     }
 }
 
-
 @Composable
-fun EjerciciosRealizados(ejercicioRealizado: EjercicioRealizado) {
+fun EjerciciosRealizados(
+    ejercicioRealizado: EjercicioRealizado,
+    onLongPress: (EjercicioRealizado) -> Unit
+) {
     Box(
         modifier = Modifier
             .padding(8.dp)
@@ -144,7 +160,12 @@ fun EjerciciosRealizados(ejercicioRealizado: EjercicioRealizado) {
                 width = 1.dp,
                 color = Blanco,
                 shape = RoundedCornerShape(12.dp)
-            ),
+            )
+            .pointerInput(Unit) {
+                detectTapGestures(onLongPress = {
+                    onLongPress(ejercicioRealizado)
+                })
+            },
         contentAlignment = Alignment.Center
     ) {
         Text(
