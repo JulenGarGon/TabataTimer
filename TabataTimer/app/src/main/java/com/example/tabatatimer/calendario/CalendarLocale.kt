@@ -3,6 +3,7 @@ package com.example.tabatatimer.calendario
 import android.os.Build
 import com.example.tabatatimer.R
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,6 +37,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.tabatatimer.ui.theme.Blanco
+import com.example.tabatatimer.ui.theme.Naranja
+import com.example.tabatatimer.ui.theme.Negro
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -49,7 +53,8 @@ class CalendarLocale {
     @Composable
     fun CalendarView(
         selectedDate: LocalDate = LocalDate.now(),
-        onDateSelected: (LocalDate) -> Unit = {}
+        onDateSelected: (LocalDate) -> Unit = {},
+        modifier: Modifier = Modifier
     ) {
         var currentMonth by remember { mutableStateOf(YearMonth.now()) }
 
@@ -59,7 +64,7 @@ class CalendarLocale {
             List(firstDayOfWeek) { null } + (1..daysInMonth).toList()
         }
 
-        Column(modifier = Modifier.fillMaxHeight()) {
+        Column(modifier = modifier.fillMaxSize().background(Negro)) {
             CalendarHeader(
                 currentMonth = currentMonth,
                 onPrevious = { currentMonth = currentMonth.minusMonths(1) },
@@ -70,26 +75,29 @@ class CalendarLocale {
 
             DaysOfWeekLabels()
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(7),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            Box(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f)
+                    .fillMaxSize()
             ) {
-                items(days.size) { index ->
-                    val day = days[index]
-                    val date = day?.let { currentMonth.atDay(it) }
-                    val isSelected = date == selectedDate
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(7),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(days.size) { index ->
+                        val day = days[index]
+                        val date = day?.let { currentMonth.atDay(it) }
+                        val isSelected = date == selectedDate
 
-                    CalendarDayCell(
-                        day = day,
-                        isSelected = isSelected,
-                        onClick = {
-                            day?.let { onDateSelected(currentMonth.atDay(it)) }
-                        }
-                    )
+                        CalendarDayCell(
+                            day = day,
+                            isSelected = isSelected,
+                            onClick = {
+                                day?.let { onDateSelected(currentMonth.atDay(it)) }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -122,7 +130,7 @@ class CalendarLocale {
                     ) {
                         Text(
                             text = day.toString(),
-                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                            color = if (isSelected) Naranja else Negro
                         )
                     }
                 }
@@ -149,11 +157,11 @@ class CalendarLocale {
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = onPrevious) {
-                Icon(painter = painterResource(R.drawable.ic_arrow_back), contentDescription = "Mes anterior")
+                Icon(painter = painterResource(R.drawable.ic_arrow_back), contentDescription = "Mes anterior", tint = Naranja)
             }
-            Text(text = monthText)
+            Text(text = monthText, color = Naranja)
             IconButton(onClick = onNext) {
-                Icon(painter = painterResource(R.drawable.ic_arrow_forward), contentDescription = "Mes siguiente")
+                Icon(painter = painterResource(R.drawable.ic_arrow_forward), contentDescription = "Mes siguiente", tint = Naranja)
             }
         }
     }
@@ -168,6 +176,7 @@ class CalendarLocale {
             daysOfWeek.forEach {
                 Text(
                     text = it,
+                    color = Naranja,
                     modifier = Modifier.weight(1f),
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center

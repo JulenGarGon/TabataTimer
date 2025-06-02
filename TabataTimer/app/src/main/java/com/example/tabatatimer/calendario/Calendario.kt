@@ -23,6 +23,7 @@ import com.example.tabatatimer.model.EjercicioRealizado
 import com.example.tabatatimer.ui.theme.Blanco
 import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Gris_Oscuro
+import com.example.tabatatimer.ui.theme.Naranja
 import com.example.tabatatimer.ui.theme.Negro
 import java.time.LocalDate
 
@@ -77,26 +78,26 @@ fun Calendario(viewModel: CalendarioViewModel = CalendarioViewModel()) {
     }
 
     Scaffold { innerPadding ->
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize().background(Negro)) {
             Box(
                 modifier = Modifier
                     .weight(0.4f)
                     .fillMaxWidth()
-                    .background(Blanco)
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .background(Negro)
                     .padding(top = innerPadding.calculateTopPadding())
             ) {
                 calendar.CalendarView(
                     selectedDate = selectedDate,
-                    onDateSelected = { date ->
-                        selectedDate = date
-                    }
+                    onDateSelected = { date -> selectedDate = date },
+                    modifier = Modifier.fillMaxSize()
                 )
             }
+
 
             Text(
                 text = "Fecha seleccionada: ${selectedDate.dayOfMonth}/${selectedDate.monthValue}/${selectedDate.year}",
                 style = MaterialTheme.typography.bodyLarge,
+                color = Naranja,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(vertical = 4.dp)

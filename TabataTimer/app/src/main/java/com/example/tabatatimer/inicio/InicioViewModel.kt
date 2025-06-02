@@ -9,7 +9,6 @@ import com.example.tabatatimer.model.Sets
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -153,8 +152,8 @@ class InicioViewModel: ViewModel() {
             val usuario = getEjerciciosUsuario(correo)
 
             val resultado = (globales + usuario).filter {
-                it.grupo_muscular?.equals(musculo, ignoreCase = true) == true ||
-                        it.grupo_muscular?.equals(musculo, ignoreCase = true) == true
+                it.grupoMuscular?.equals(musculo, ignoreCase = true) == true ||
+                        it.grupoMuscular?.equals(musculo, ignoreCase = true) == true
             }
 
             onResult(resultado)

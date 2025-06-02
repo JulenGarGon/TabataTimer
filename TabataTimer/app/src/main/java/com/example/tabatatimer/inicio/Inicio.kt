@@ -1,7 +1,6 @@
 package com.example.tabatatimer.inicio
 
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,9 +41,8 @@ import com.example.tabatatimer.model.Ejercicio
 import com.example.tabatatimer.model.Musculo
 import com.example.tabatatimer.model.Sets
 import com.example.tabatatimer.nuevoejercicio.NuevoEjercicio
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.tabatatimer.EjerciciosFiltrados.EjerciciosFiltrados
+import com.example.tabatatimer.ejerciciosfiltrados.EjerciciosFiltrados
 import com.google.firebase.auth.FirebaseAuth
 import com.example.tabatatimer.ui.theme.Blanco
 import com.example.tabatatimer.ui.theme.Gris_Claro

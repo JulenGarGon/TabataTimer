@@ -1,4 +1,4 @@
-package com.example.tabatatimer.EjerciciosFiltrados
+package com.example.tabatatimer.ejerciciosfiltrados
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -81,7 +81,7 @@ fun EjerciciosFiltrados(
             items(filas) { fila ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     for (ejercicio in fila) {
                         EjercicioItem(

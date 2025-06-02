@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             //LoginScreen()
             navHostController = rememberNavController()
-            TabataTimerTheme {
+            TabataTimerTheme(darkTheme = false) {
                 Surface (
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
