@@ -8,6 +8,7 @@ public enum TiposSets {
     pesa_rusa,
     barra_de_trazos,
     power_rack,
+    poleas,
     cinta_de_correr,
     bicicleta,
     remo,

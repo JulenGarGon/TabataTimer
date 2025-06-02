@@ -185,38 +185,39 @@ fun GrupoMuscularDropdown(musculos: List<String>, viewModel: NuevoEjercicioViewM
     val selected = viewModel.grupoMuscular
 
     Box(modifier = Modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = selected.replace("_", " "),
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Grupo muscular principal", color = Blanco) },
-            readOnly = true,
-            trailingIcon = {
-                IconButton(onClick = { expanded = !expanded }) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded }
+        ) {
+            OutlinedTextField(
+                value = selected.replace("_", " "),
+                onValueChange = {},
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text("Grupo muscular principal", color = Blanco) },
+                readOnly = true,
+                enabled = false,
+                trailingIcon = {
                     Icon(
                         painter = painterResource(R.drawable.ic_arrow_drop_down),
                         contentDescription = "Expand",
                         tint = Blanco
                     )
-                }
-            },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = Blanco,
-                unfocusedIndicatorColor = Blanco,
-                focusedLabelColor = Blanco,
-                unfocusedLabelColor = Blanco,
-                cursorColor = Blanco,
-                focusedTextColor = Blanco,
-                unfocusedTextColor = Blanco
+                },
+                colors = TextFieldDefaults.colors(
+                    disabledContainerColor = Color.Transparent,
+                    disabledIndicatorColor = Blanco,
+                    disabledLabelColor = Blanco,
+                    disabledTextColor = Blanco
+                )
             )
-        )
+        }
 
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             musculos.forEach { musculo ->
                 DropdownMenuItem(
-                    text = { Text(musculo.replace("_", " "), color = Blanco) },
+                    text = { Text(musculo.replace("_", " "), color = Negro) },
+                    modifier = Modifier.background(Color.LightGray),
                     onClick = {
                         viewModel.onGrupoMuscularChanged(musculo)
                         expanded = false
@@ -230,9 +231,11 @@ fun GrupoMuscularDropdown(musculos: List<String>, viewModel: NuevoEjercicioViewM
 @Composable
 fun EsfuerzoSelector(musculos: List<String>, viewModel: NuevoEjercicioViewModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text("Esfuerzo por músculo (1-10)", style = MaterialTheme.typography.titleMedium)
+        Text("Esfuerzo por músculo (0-10)",
+            style = MaterialTheme.typography.titleMedium,
+            color = Blanco)
         musculos.forEach { musculo ->
-            val valor = viewModel.esfuerzo[musculo] ?: 1
+            val valor = viewModel.esfuerzo[musculo] ?: 0
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -249,7 +252,7 @@ fun EsfuerzoSelector(musculos: List<String>, viewModel: NuevoEjercicioViewModel)
                 Slider(
                     value = valor.toFloat(),
                     onValueChange = { viewModel.onEsfuerzoChanged(musculo, it.toInt()) },
-                    valueRange = 1f..10f,
+                    valueRange = 0f..10f,
                     steps = 8,
                     modifier = Modifier.weight(1f)
                 )
@@ -265,38 +268,39 @@ fun SetDropdown(viewModel: NuevoEjercicioViewModel) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = viewModel.set.replace("_", " "),
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Set necesario") },
-            readOnly = true,
-            trailingIcon = {
-                IconButton(onClick = { expanded = !expanded }) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded } // Esto captura el toque en todo el recuadro
+        ) {
+            OutlinedTextField(
+                value = viewModel.set.replace("_", " "),
+                onValueChange = {},
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text("Set necesario", color = Blanco) },
+                readOnly = true,
+                enabled = false, // Hace que se vea como no editable
+                trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_drop_down),
                         contentDescription = "Expand",
                         tint = Blanco
                     )
-                }
-            },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                focusedIndicatorColor = Blanco,
-                unfocusedIndicatorColor = Blanco,
-                focusedLabelColor = Blanco,
-                unfocusedLabelColor = Blanco,
-                cursorColor = Blanco,
-                focusedTextColor = Blanco,
-                unfocusedTextColor = Blanco
+                },
+                colors = TextFieldDefaults.colors(
+                    disabledContainerColor = Color.Transparent,
+                    disabledIndicatorColor = Blanco,
+                    disabledLabelColor = Blanco,
+                    disabledTextColor = Blanco
+                )
             )
-        )
+        }
 
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             sets.forEach { item ->
                 DropdownMenuItem(
-                    text = { Text(item, color = Blanco) },
+                    text = { Text(item, color = Negro) },
+                    modifier = Modifier.background(Color.LightGray),
                     onClick = {
                         viewModel.onSetChanged(item.replace(" ", "_"))
                         expanded = false
