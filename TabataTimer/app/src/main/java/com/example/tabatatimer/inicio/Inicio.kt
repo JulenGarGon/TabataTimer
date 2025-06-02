@@ -44,6 +44,7 @@ import com.example.tabatatimer.model.Sets
 import com.example.tabatatimer.nuevoejercicio.NuevoEjercicio
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.tabatatimer.EjerciciosFiltrados.EjerciciosFiltrados
 import com.google.firebase.auth.FirebaseAuth
 import com.example.tabatatimer.ui.theme.Blanco
 import com.example.tabatatimer.ui.theme.Gris_Claro
@@ -57,6 +58,10 @@ fun Inicio(viewModel: InicioViewModel = viewModel()){
     val ejercicios: State<List<Ejercicio>> = viewModel.ejercicio.collectAsState()
     val sets: State<List<Sets>> = viewModel.set.collectAsState()
     val musculos: State<List<Musculo>> = viewModel.musculo.collectAsState()
+
+    var ejerciciosFiltrados by remember { mutableStateOf<List<Ejercicio>>(emptyList()) }
+    var mostrarFiltrados by remember { mutableStateOf(false) }
+    var tituloFiltrado by remember { mutableStateOf("") }
 
     val context = LocalContext.current
 
@@ -157,11 +162,17 @@ fun Inicio(viewModel: InicioViewModel = viewModel()){
                 LazyRow {
                     items(sets.value) {
                         SetItem(set = it, onItemSelected = { selectedSet ->
-                            Toast.makeText(
-                                context,
-                                "Set seleccionado ${selectedSet.nombre.orEmpty()}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val correo = FirebaseAuth.getInstance().currentUser?.email ?: return@SetItem
+                            viewModel.getEjerciciosPorSet(correo, selectedSet.nombre ?: "") {
+                                ejerciciosFiltrados = it
+                                tituloFiltrado = "Ejercicios con ${selectedSet.nombre}"
+                                mostrarFiltrados = true
+                            }
+//                            Toast.makeText(
+//                                context,
+//                                "Set seleccionado ${selectedSet.nombre.orEmpty()}",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
                         })
                         Spacer(modifier = Modifier.width(2.dp))
                     }
@@ -189,11 +200,17 @@ fun Inicio(viewModel: InicioViewModel = viewModel()){
                 LazyRow {
                     items(musculos.value) {
                         SetMusculo(musculo = it, onItemSelected = { selectedMusculo ->
-                            Toast.makeText(
-                                context,
-                                "Músculo seleccionado ${selectedMusculo.nombre.orEmpty()}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val correo = FirebaseAuth.getInstance().currentUser?.email ?: return@SetMusculo
+                            viewModel.getEjerciciosPorMusculo(correo, selectedMusculo.nombre ?: "") {
+                                ejerciciosFiltrados = it
+                                tituloFiltrado = "Ejercicios para ${selectedMusculo.nombre}"
+                                mostrarFiltrados = true
+                            }
+//                            Toast.makeText(
+//                                context,
+//                                "Músculo seleccionado ${selectedMusculo.nombre.orEmpty()}",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
                         })
                         Spacer(modifier = Modifier.width(2.dp))
                     }
@@ -215,15 +232,7 @@ fun Inicio(viewModel: InicioViewModel = viewModel()){
                 Text(text = "+")
             }
     }
-    ejercicioSeleccionado?.let { ejercicio ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Negro.copy(alpha = 0.5f))
-                .clickable(enabled = true, onClick = {})
-        )
-        EjercicioDetalle(ejercicio = ejercicio, onBack = {ejercicioSeleccionado = null})
-    }
+
 
     if (crearNuevoEjercicio) {
         Box(
@@ -240,9 +249,26 @@ fun Inicio(viewModel: InicioViewModel = viewModel()){
             }
         })
     }
+    if (mostrarFiltrados) {
+        EjerciciosFiltrados(
+            titulo = tituloFiltrado,
+            ejercicios = ejerciciosFiltrados,
+            onBack = { mostrarFiltrados = false },
+            onEjercicioSeleccionado = { ejercicioSeleccionado = it }
+        )
+    }
+    ejercicioSeleccionado?.let { ejercicio ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Negro.copy(alpha = 0.5f))
+                .clickable(enabled = true, onClick = {})
+        )
+        EjercicioDetalle(ejercicio = ejercicio, onBack = {ejercicioSeleccionado = null})
+    }
 }
 @Composable
-fun EjercicioItem(ejercicio: Ejercicio, onItemSelected: (Ejercicio) -> Unit){
+fun EjercicioItem(ejercicio: Ejercicio, onItemSelected: (Ejercicio) -> Unit, modifier: Modifier = Modifier){
     Column(horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier

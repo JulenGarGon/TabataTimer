@@ -134,5 +134,51 @@ class InicioViewModel: ViewModel() {
     }
 
 
+    fun getEjerciciosPorSet(correo: String, nombreSet: String, onResult: (List<Ejercicio>) -> Unit) {
+        viewModelScope.launch {
+            val globales = getAllEjercicios()
+            val usuario = getEjerciciosUsuario(correo)
+
+            val resultado = (globales + usuario).filter {
+                it.set.equals(nombreSet, ignoreCase = true)
+            }
+
+            onResult(resultado)
+        }
+    }
+
+    fun getEjerciciosPorMusculo(correo: String, musculo: String, onResult: (List<Ejercicio>) -> Unit) {
+        viewModelScope.launch {
+            val globales = getAllEjercicios()
+            val usuario = getEjerciciosUsuario(correo)
+
+            val resultado = (globales + usuario).filter {
+                it.grupo_muscular?.equals(musculo, ignoreCase = true) == true ||
+                        it.grupo_muscular?.equals(musculo, ignoreCase = true) == true
+            }
+
+            onResult(resultado)
+        }
+    }
+
+
+    private suspend fun getEjerciciosUsuario(correo: String): List<Ejercicio> {
+        return try {
+            val docs = db.collection("ejercicio_usuario")
+                .document(correo)
+                .collection("ejercicios")
+                .get()
+                .await()
+
+            docs.mapNotNull { doc ->
+                doc.toObject(Ejercicio::class.java)?.copy(idDocumento = doc.id)
+            }
+        } catch (e: Exception) {
+            Log.i("FIRESTORE", "Error al cargar ejercicios usuario: ${e.message}")
+            emptyList()
+        }
+    }
+
+
 
 }
