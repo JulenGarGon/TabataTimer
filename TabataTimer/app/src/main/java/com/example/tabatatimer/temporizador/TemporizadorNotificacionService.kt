@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.media.RingtoneManager
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -15,6 +16,7 @@ import com.example.tabatatimer.R
 class TemporizadorNotificacionService : Service(){
 
     private val CANAL_ID = "temporizador_canal"
+    private val CANAL_FINAL_ID = "temporizador_canal_final"
     private val NOTIFICACION_ID = 1
     private var tiempoActual = 0
 
@@ -46,6 +48,12 @@ class TemporizadorNotificacionService : Service(){
                     e.printStackTrace()
                 }
             }
+            "FINAL" -> {
+                val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val notificacion = buildFinalNotificacion()
+                manager.notify(999, notificacion)
+            }
+
         }
         return START_NOT_STICKY
     }
@@ -70,5 +78,32 @@ class TemporizadorNotificacionService : Service(){
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+
+    private fun buildFinalNotificacion(): Notification {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val sonido = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+            val canal = NotificationChannel(
+                CANAL_FINAL_ID,
+                "Fin de descanso",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                enableVibration(true)
+                vibrationPattern = longArrayOf(0, 500, 300, 500)
+                setSound(sonido, null)
+            }
+
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(canal)
+        }
+
+        return NotificationCompat.Builder(this, CANAL_FINAL_ID)
+            .setContentTitle("Descanso terminado")
+            .setContentText("¡Es hora de volver al ejercicio!")
+            .setSmallIcon(R.drawable.ic_clock)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .build()
+    }
 
 }

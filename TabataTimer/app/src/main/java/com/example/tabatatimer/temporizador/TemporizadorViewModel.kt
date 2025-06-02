@@ -79,6 +79,9 @@ class TemporizadorViewModel: ViewModel() {
             }
 
             _activado.value = false
+
+            enviarNotificacion(context, "FINAL")
+
             _tiempoRestante.value = _valorBarra.value.toInt()
             enviarNotificacion(context, "STOP")
         }
