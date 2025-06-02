@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tabatatimer.model.Ejercicio
 import com.example.tabatatimer.model.Musculo
 import com.example.tabatatimer.model.Sets
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -177,6 +178,22 @@ class InicioViewModel: ViewModel() {
             emptyList()
         }
     }
+
+    fun eliminarEjercicioUsuario(ejercicio: Ejercicio) {
+        val email = FirebaseAuth.getInstance().currentUser?.email ?: return
+        val id = ejercicio.idDocumento ?: return
+
+        FirebaseFirestore.getInstance()
+            .collection("ejercicio_usuario")
+            .document(email)
+            .collection("ejercicios")
+            .document(id)
+            .delete()
+            .addOnSuccessListener {
+                getAllEjerciciosUsuario(email)
+            }
+    }
+
 
 
 

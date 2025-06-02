@@ -1,9 +1,11 @@
 package com.example.tabatatimer.inicio
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,6 +50,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.example.tabatatimer.ui.theme.Blanco
 import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Gris_Oscuro
+import com.example.tabatatimer.ui.theme.Naranja_Oscuro
 import com.example.tabatatimer.ui.theme.Negro
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -128,11 +132,20 @@ fun Inicio(viewModel: InicioViewModel = viewModel()){
                     color = Negro
                 )
                 Spacer(modifier = Modifier.width(10.dp))
+
                 LazyRow {
                     items(ejerciciosUsuario) {
-                        EjercicioItem(ejercicio = it, onItemSelected = { selectedEjercicio ->
-                            ejercicioSeleccionado = selectedEjercicio
-                        })
+                        EjercicioItem(
+                            ejercicio = it,
+                            onItemSelected = { selectedEjercicio ->
+                                ejercicioSeleccionado = selectedEjercicio
+                            },
+                            personalizado = true,
+                            onDeleteConfirmed = { ejercicio ->
+                                viewModel.eliminarEjercicioUsuario(ejercicio)
+                                Toast.makeText(context, "Ejercicio eliminado", Toast.LENGTH_SHORT).show()
+                            }
+                        )
                         Spacer(modifier = Modifier.width(2.dp))
                     }
                 }
@@ -252,7 +265,7 @@ fun Inicio(viewModel: InicioViewModel = viewModel()){
             titulo = tituloFiltrado,
             ejercicios = ejerciciosFiltrados,
             onBack = { mostrarFiltrados = false },
-            onEjercicioSeleccionado = { ejercicioSeleccionado = it }
+            onEjercicioSeleccionado = { ejercicio -> ejercicioSeleccionado = ejercicio }
         )
     }
     ejercicioSeleccionado?.let { ejercicio ->
@@ -266,16 +279,63 @@ fun Inicio(viewModel: InicioViewModel = viewModel()){
     }
 }
 @Composable
-fun EjercicioItem(ejercicio: Ejercicio, onItemSelected: (Ejercicio) -> Unit, modifier: Modifier = Modifier){
-    Column(horizontalAlignment = Alignment.CenterHorizontally,
+fun EjercicioItem(ejercicio: Ejercicio,
+                  onItemSelected: (Ejercicio) -> Unit,
+                  personalizado: Boolean = false,
+                  onDeleteConfirmed: ((Ejercicio) -> Unit)? = null,
+                  modifier: Modifier = Modifier
+){
+    val context = LocalContext.current
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                Text(
+                    "Eliminar",
+                    modifier = Modifier.clickable {
+                        onDeleteConfirmed?.invoke(ejercicio)
+                        showDialog = false
+                    },
+                    color = Naranja_Oscuro
+                )
+            },
+            dismissButton = {
+                Text("Cancelar", modifier = Modifier.clickable { showDialog = false })
+            },
+            title = { Text("Eliminar ejercicio") },
+            text = { Text("¿Deseas eliminar este ejercicio personalizado?") }
+        )
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .clickable { onItemSelected(ejercicio) }
+        modifier = modifier
+            .pointerInput(personalizado) {
+                detectTapGestures(
+                    onTap = { onItemSelected(ejercicio) },
+                    onLongPress = {
+                        if (personalizado) {
+                            showDialog = true
+                        } else {
+                            Toast
+                                .makeText(
+                                    context,
+                                    "Solo puedes eliminar ejercicios personalizados",
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+                        }
+                    }
+                )
+            }
             .padding(top = 10.dp, bottom = 10.dp)
             .background(Negro)
             .width(160.dp)
             .height(160.dp)
-    ){
+    ) {
         Spacer(modifier = Modifier.height(4.dp))
         AsyncImage(
             modifier = Modifier
