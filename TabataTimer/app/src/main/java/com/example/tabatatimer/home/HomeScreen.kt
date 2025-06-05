@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import com.example.tabatatimer.R
 import com.example.tabatatimer.calendario.Calendario
 import com.example.tabatatimer.inicio.Inicio
@@ -30,9 +31,8 @@ import com.example.tabatatimer.musculos.Musculos
 import com.example.tabatatimer.resumen.Resumen
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Preview
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavHostController) {
     var selectedTab by remember { mutableStateOf(0) }
 
     val tabs = listOf(
@@ -75,7 +75,7 @@ fun HomeScreen() {
             .padding(innerPadding)
             .fillMaxSize()) {
             when (selectedTab) {
-                0 -> HomeContent(homeState)
+                0 -> HomeContent(homeState, navController)
                 1 -> SummaryContent(summaryState)
                 2 -> CalendarContent(calendarState)
                 3 -> MusclesContent(musclesState)
@@ -89,8 +89,8 @@ data class TabItem(val titleRes: Int, val iconRes: Int, val selectedIconRes: Int
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun HomeContent(state: MutableState<String>) {
-    Inicio()
+fun HomeContent(state: MutableState<String>, navController: NavHostController) {
+    Inicio(navController = navController)
 }
 
 @Composable

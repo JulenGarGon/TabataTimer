@@ -50,7 +50,7 @@ import com.example.tabatatimer.ui.theme.Negro
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun SignUpScreen(auth: FirebaseAuth, onBackPressed: () -> Unit) {
+fun SignUpScreen(auth: FirebaseAuth, onBackPressed: () -> Unit, onSignUpSuccess: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var conf_email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -200,6 +200,7 @@ fun SignUpScreen(auth: FirebaseAuth, onBackPressed: () -> Unit) {
                             task ->
                             if (task.isSuccessful) {
                                 Toast.makeText(context, "Usuario creado", Toast.LENGTH_SHORT).show()
+                                onSignUpSuccess()
                             } else {
                                 Toast.makeText(context, "Fallo en la creación de usuario", Toast.LENGTH_SHORT).show()
                             }

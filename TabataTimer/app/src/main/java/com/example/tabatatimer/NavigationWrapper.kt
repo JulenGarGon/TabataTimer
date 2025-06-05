@@ -29,11 +29,12 @@ fun NavigationWrapper(navHostController: NavHostController, auth: FirebaseAuth, 
         composable("signup"){
             SignUpScreen(
                 auth,
-                onBackPressed = { navHostController.navigate("initial")}
+                onBackPressed = { navHostController.navigate("initial")},
+                onSignUpSuccess = { navHostController.navigate("app") }
             )
         }
         composable("app"){
-            HomeScreen()
+            HomeScreen(navController)
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +20,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,6 +52,13 @@ import com.example.tabatatimer.nuevoejercicio.NuevoEjercicio
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tabatatimer.ejerciciosfiltrados.EjerciciosFiltrados
 import com.google.firebase.auth.FirebaseAuth
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
+import com.example.tabatatimer.R
+import com.example.tabatatimer.auth.eliminarCuenta
+import com.example.tabatatimer.auth.logoutUsuario
 import com.example.tabatatimer.ui.theme.Blanco
 import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Gris_Oscuro
@@ -54,9 +66,8 @@ import com.example.tabatatimer.ui.theme.Naranja_Oscuro
 import com.example.tabatatimer.ui.theme.Negro
 
 @RequiresApi(Build.VERSION_CODES.P)
-@Preview
 @Composable
-fun Inicio(viewModel: InicioViewModel = viewModel()){
+fun Inicio(viewModel: InicioViewModel = viewModel(), navController: NavController){
     val ejercicios: State<List<Ejercicio>> = viewModel.ejercicio.collectAsState()
     val sets: State<List<Sets>> = viewModel.set.collectAsState()
     val musculos: State<List<Musculo>> = viewModel.musculo.collectAsState()
@@ -76,6 +87,8 @@ fun Inicio(viewModel: InicioViewModel = viewModel()){
             viewModel.getAllEjerciciosUsuario(correo)
         }
     }
+
+    var showMenu by remember { mutableStateOf(false) }
 
 
     Column(
@@ -230,9 +243,18 @@ fun Inicio(viewModel: InicioViewModel = viewModel()){
         }
         Spacer(modifier = Modifier.height(12.dp))
     }
-    Box(modifier = Modifier.fillMaxSize()
-        .padding(bottom = 16.dp, end = 16.dp),
-        contentAlignment = Alignment.BottomEnd) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        var showMenu by remember { mutableStateOf(false) }
+
+        // FAB crear nuevo ejercicio (abajo derecha)
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
             FloatingActionButton(
                 onClick = {
                     crearNuevoEjercicio = true
@@ -242,7 +264,47 @@ fun Inicio(viewModel: InicioViewModel = viewModel()){
             ) {
                 Text(text = "+")
             }
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+        ) {
+            FloatingActionButton(
+                onClick = { showMenu = true },
+                containerColor = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_profile),
+                    contentDescription = "Menú usuario"
+                )
+            }
+
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Cerrar sesión") },
+                    onClick = {
+                        showMenu = false
+                        logoutUsuario(context, navController)
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text("Eliminar cuenta") },
+                    onClick = {
+                        showMenu = false
+                        eliminarCuenta(context, navController)
+                    }
+                )
+            }
+        }
     }
+
+
 
 
     if (crearNuevoEjercicio) {
