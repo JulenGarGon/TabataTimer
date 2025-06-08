@@ -59,16 +59,13 @@ class MusculosViewModel : ViewModel() {
         _ejerciciosDelDia.value = emptyList()
         _esfuerzoMuscular.value = emptyMap()
 
-        ref.get().addOnSuccessListener { docs ->
-            if (docs.isEmpty) return@addOnSuccessListener
+        ref.addSnapshotListener { docs, error ->
+            if (error != null || docs == null || docs.isEmpty) return@addSnapshotListener
 
             val tareas = mutableListOf<Task<DocumentSnapshot>>()
             val datosLocales = mutableListOf<EjercicioRealizadoConEsfuerzo>()
-
             val esfuerzoPonderadoSum = mutableMapOf<String, Float>()
             val esfuerzoPonderadoDivisor = mutableMapOf<String, Float>()
-
-
 
             for (doc in docs) {
                 val id = doc.getString("id") ?: continue
@@ -76,20 +73,13 @@ class MusculosViewModel : ViewModel() {
                 val peso = doc.getDouble("peso")?.toFloat() ?: 0f
                 val repeticiones = doc.getLong("repeticiones")?.toInt() ?: 0
 
-                val userEjRef = db.collection("ejercicio_usuario")
-                    .document(userEmail)
-                    .collection("ejercicios")
-                    .document(id)
-
+                val userEjRef = db.collection("ejercicio_usuario").document(userEmail).collection("ejercicios").document(id)
                 val publicEjRef = db.collection("ejercicios").document(id)
 
                 val tarea = publicEjRef.get().continueWithTask { publicTask ->
                     val publicDoc = publicTask.result
-                    if (publicDoc.exists()) {
-                        return@continueWithTask Tasks.forResult(publicDoc)
-                    } else {
-                        return@continueWithTask userEjRef.get()
-                    }
+                    if (publicDoc.exists()) Tasks.forResult(publicDoc)
+                    else userEjRef.get()
                 }.addOnSuccessListener { ejercicioDoc ->
                     val esfuerzoMap = (ejercicioDoc.get("esfuerzo") as? Map<String, Long>)?.mapValues { it.value.toInt() } ?: emptyMap()
 
@@ -99,18 +89,8 @@ class MusculosViewModel : ViewModel() {
                         esfuerzoPonderadoDivisor[musculo] = esfuerzoPonderadoDivisor.getOrDefault(musculo, 0f) + (peso * repeticiones)
                     }
 
-
-
-                    datosLocales.add(
-                        EjercicioRealizadoConEsfuerzo(
-                            nombre = nombre,
-                            peso = peso,
-                            repeticiones = repeticiones,
-                            esfuerzo = esfuerzoMap
-                        )
-                    )
+                    datosLocales.add(EjercicioRealizadoConEsfuerzo(nombre, peso, repeticiones, esfuerzoMap))
                 }
-
 
                 tareas.add(tarea)
             }
@@ -122,15 +102,12 @@ class MusculosViewModel : ViewModel() {
                     (media.coerceAtMost(10f)) / 10f
                 }
 
-
-//                Log.d("MUSCULOS_VIEWMODEL", "Esfuerzo final: $esfuerzoAcumulado")
-//                Log.d("MUSCULOS_VIEWMODEL", "Normalizado: $normalizado")
-
                 _ejerciciosDelDia.value = datosLocales.toList()
                 _esfuerzoMuscular.value = normalizado.toMap()
             }
         }
     }
+
 
     data class EjercicioRealizadoConEsfuerzo(
         val nombre: String,
