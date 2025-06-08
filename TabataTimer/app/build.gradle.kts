@@ -78,6 +78,8 @@ dependencies {
     implementation(libs.firebase.realtime)
     implementation(libs.coil)
 
+    implementation(libs.androidx.espresso.core)
+    implementation("androidx.compose.material:material-icons-extended")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

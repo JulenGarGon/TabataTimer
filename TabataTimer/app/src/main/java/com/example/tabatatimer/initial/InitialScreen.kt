@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +46,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,7 +57,6 @@ import com.example.tabatatimer.ui.theme.Gris_Claro
 import com.example.tabatatimer.ui.theme.Gris_Oscuro
 import com.example.tabatatimer.ui.theme.Negro
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.coroutineScope
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,6 +64,7 @@ import kotlinx.coroutines.coroutineScope
 fun InitialScreen( auth: FirebaseAuth, navigateToApp: () -> Unit = {}, navigateToSignUp: () -> Unit = {}){
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
     val customFontFamily = FontFamily(
         Font(R.font.groteskmedium)
     )
@@ -169,6 +174,16 @@ fun InitialScreen( auth: FirebaseAuth, navigateToApp: () -> Unit = {}, navigateT
                                 .fillMaxWidth(0.7f)
                                 .padding(bottom = 16.dp, top = 8.dp),
                             singleLine = true,
+                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            trailingIcon = {
+                                val image = if (passwordVisible)
+                                    Icons.Default.Visibility
+                                else Icons.Default.VisibilityOff
+
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    Icon(imageVector = image, contentDescription = null)
+                                }
+                            },
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Negro,
                                 unfocusedContainerColor = Blanco,
