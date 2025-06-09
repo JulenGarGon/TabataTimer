@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -133,38 +135,46 @@ fun Video(ejercicio: Ejercicio){
 }
 
 @Composable
-fun DatoSet(texto: String, valorInicial: Float, onValorChange: (Float) -> Unit){
+fun DatoSet(texto: String, valorInicial: Float, onValorChange: (Float) -> Unit) {
     var valor by remember { mutableStateOf(valorInicial) }
 
-    Row (modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 8.dp),
+    fun ajustarValor(delta: Float) {
+        valor = (valor + delta).coerceAtLeast(0f)
+        onValorChange(valor)
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
-    ){
-        Text( text = texto,
+    ) {
+        Text(
+            text = texto,
             color = Blanco,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(0.4f))
+            modifier = Modifier.weight(0.4f)
+        )
 
         Spacer(modifier = Modifier.weight(0.1f))
 
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .weight(0.5f)
-        ){
-            Image(painter = painterResource(R.drawable.ic_remove),
-                contentDescription = "Menos",
-                modifier = Modifier
-                    .clickable {
-                        if (texto.equals("Repeticiones")){
-                            valor = (valor - 1f).coerceAtLeast(0f)
-                        } else valor = (valor - 0.5f).coerceAtLeast(0f) }
-                    .weight(0.3f)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.5f)
+        ) {
+            RepetitiveClickButton(
+                onClick = {
+                    ajustarValor(if (texto == "Repeticiones") -1f else -0.5f)
+                },
+                modifier = Modifier.weight(0.3f),
+                icono = R.drawable.ic_remove
             )
+
             Spacer(modifier = Modifier.width(2.dp))
 
             TextField(
-                value = if (texto.equals("Repeticiones")) valor.toInt().toString() else String.format("%.1f", valor),
+                value = if (texto == "Repeticiones") valor.toInt().toString() else String.format("%.1f", valor),
                 onValueChange = { nuevoValor ->
                     val valorNuevo: Float? = if (texto != "Repeticiones") {
                         nuevoValor.replace(',', '.').toFloatOrNull()
@@ -173,6 +183,7 @@ fun DatoSet(texto: String, valorInicial: Float, onValorChange: (Float) -> Unit){
                     }
                     if (valorNuevo != null) {
                         valor = valorNuevo
+                        onValorChange(valor)
                     }
                 },
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
@@ -186,20 +197,55 @@ fun DatoSet(texto: String, valorInicial: Float, onValorChange: (Float) -> Unit){
                     focusedTextColor = Blanco,
                     unfocusedTextColor = Blanco
                 ),
-                modifier = Modifier.weight(0.4f).heightIn(min = 48.dp)
-            )
-            Spacer(modifier = Modifier.width(2.dp))
-            Image(painter = painterResource(R.drawable.ic_add),
-                contentDescription = "Mas",
                 modifier = Modifier
-                    .clickable {
-                        if (texto.equals("Repeticiones")){
-                            valor = (valor + 1f)
-                        } else valor = (valor + 0.5f)
-                        onValorChange(valor)
-                    }
-                    .weight(0.3f)
+                    .weight(0.4f)
+                    .heightIn(min = 48.dp)
+            )
+
+            Spacer(modifier = Modifier.width(2.dp))
+
+            RepetitiveClickButton(
+                onClick = {
+                    ajustarValor(if (texto == "Repeticiones") 1f else 0.5f)
+                },
+                modifier = Modifier.weight(0.3f),
+                icono = R.drawable.ic_add
             )
         }
     }
 }
+
+
+@Composable
+fun RepetitiveClickButton( onClick: () -> Unit, modifier: Modifier = Modifier, icono: Int) {
+    val delayMillis = 100L
+    val longPressDelay = 300L
+    var isPressed by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            kotlinx.coroutines.delay(longPressDelay)
+            while (isPressed) {
+                onClick()
+                kotlinx.coroutines.delay(delayMillis)
+            }
+        }
+    }
+
+    Image(
+        painter = painterResource(id = icono),
+        contentDescription = null,
+        modifier = modifier
+            .clickable { onClick() }
+            .pointerInput(Unit) {
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        isPressed = event.changes.any { it.pressed }
+                        if (!isPressed) break
+                    }
+                }
+            }
+    )
+}
+
